@@ -1,0 +1,102 @@
+{
+ "prime-spalnya": {
+  "w": 1280,
+  "h": 960
+ },
+ "prime-vannaya": {
+  "w": 1280,
+  "h": 960
+ },
+ "prime-zerkalo": {
+  "w": 960,
+  "h": 1280
+ },
+ "prime-dush": {
+  "w": 960,
+  "h": 1280
+ },
+ "prime-shkaf": {
+  "w": 960,
+  "h": 1280
+ },
+ "sky-gostinaya": {
+  "w": 960,
+  "h": 1280
+ },
+ "sky-kuhnya": {
+  "w": 960,
+  "h": 1280
+ },
+ "sky-sanuzel": {
+  "w": 960,
+  "h": 1280
+ },
+ "sky-kollektor": {
+  "w": 960,
+  "h": 1280
+ },
+ "shel-gostinaya": {
+  "w": 1280,
+  "h": 852
+ },
+ "shel-stolovaya": {
+  "w": 852,
+  "h": 1280
+ },
+ "shel-koridor": {
+  "w": 1280,
+  "h": 1280
+ },
+ "shel-spalnya": {
+  "w": 852,
+  "h": 1280
+ },
+ "shel-spalnya-2": {
+  "w": 852,
+  "h": 1280
+ },
+ "eni-vannaya": {
+  "w": 960,
+  "h": 1280
+ },
+ "eni-koridor": {
+  "w": 960,
+  "h": 1280
+ },
+ "eni-pol": {
+  "w": 960,
+  "h": 1280
+ },
+ "eni-komnata": {
+  "w": 960,
+  "h": 1280
+ },
+ "ochak-tv": {
+  "w": 960,
+  "h": 1280
+ },
+ "ochak-stolovaya": {
+  "w": 800,
+  "h": 1066
+ },
+ "detsky-karta": {
+  "w": 960,
+  "h": 1280
+ },
+ "detsky-holl": {
+  "w": 960,
+  "h": 1280
+ },
+ "novok-komnata": {
+  "w": 960,
+  "h": 1280
+ },
+ "novok-vannaya": {
+  "w": 960,
+  "h": 1280
+ },
+ "osnovatel": {
+  "w": 493,
+  "h": 740
+ }
+}
