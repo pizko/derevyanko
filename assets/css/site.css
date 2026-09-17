@@ -272,6 +272,7 @@ details p{color:var(--tx2);padding:0 0 26px;max-width:62ch;font-size:15px}
 .form-act{grid-column:1/-1;display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:8px}
 .consent{font-size:12px;color:var(--tx2);max-width:36ch;line-height:1.5}
 .consent a{border-bottom:1px solid var(--line)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form-msg{grid-column:1/-1;font-size:15px;min-height:1.5em}
 .form-msg.ok{color:var(--tx)}.form-msg.bad{color:#ff6b7d}
 .lead.sending button{opacity:.6;pointer-events:none}

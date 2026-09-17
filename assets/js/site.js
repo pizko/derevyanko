@@ -197,15 +197,15 @@
       return;
     }
     const fd = new FormData(form);
-    fd.append("_wpcf7_unit_tag", form.dataset.unit);
+    fd.append("page", location.href);
     form.classList.add("sending"); msg.className = "form-msg"; msg.textContent = "Отправляем…";
     try {
-      const r = await fetch(form.action, { method: "POST", body: fd, credentials: "include" });
+      const r = await fetch(form.action, { method: "POST", body: fd, headers: { "X-Requested-With": "XMLHttpRequest" } });
       const j = await r.json();
-      if (j.status === "mail_sent") {
+      if (j.ok) {
         form.reset(); msg.className = "form-msg ok"; msg.textContent = j.message || "Спасибо! Перезвоним в течение рабочего дня.";
         if (window.ym) ym(104567459, "reachGoal", "landing_form");
-      } else throw new Error(j.status);
+      } else throw new Error(j.error || "fail");
     } catch (err) {
       msg.className = "form-msg bad";
       msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79265886968">+7 926 588 69 68</a> или напишите на <a href="mailto:info@sk-derevyanko.ru">info@sk-derevyanko.ru</a>.';

@@ -5,8 +5,10 @@
 Площади, сроки и годы по объектам на сайте не указаны — поэтому их здесь нет.
 
   python3 src/media.py          # фото (один раз)
-  python3 src/build.py          # staging для GitHub Pages: noindex, без Метрики
-  python3 src/build.py --prod   # для домена: index, Метрика
+  python3 src/build.py          # staging для GitHub Pages: без Метрики
+  python3 src/build.py --prod   # для beget (папка sk-remont): Метрика + заявки через send.php
+
+Сайт ведётся только под Директ — закрыт от индексации в обоих режимах (meta, robots.txt, X-Robots-Tag).
 """
 import hashlib, html, json, pathlib, sys
 
@@ -24,8 +26,7 @@ ADDRESS = "Москва, Партийный переулок, 1, корп. 58, �
 YMAPS = "https://yandex.ru/maps/org/derevyanko/121687699078/"
 SOCIAL = [("Дзен", "https://dzen.ru/id/66869490deb14e765dcd9429"), ("Яндекс Карты", YMAPS)]
 PF = json.loads((ROOT / "assets/img/pf.json").read_text())
-FORM_ID = 9421   # отдельная форма CF7 «Лендинг — заявка» на sk-derevyanko.ru
-FORM_URL = f"{SITE}wp-json/contact-form-7/v1/contact-forms/{FORM_ID}/feedback"
+FORM_URL = "send.php"   # PHP на beget → Telegram-бот заявок (конфиг вне webroot: ~/sk-remont/lead_config.php)
 METRIKA = 104567459
 
 
@@ -173,11 +174,10 @@ graph = [
 w('<!doctype html><html lang="ru" class="no-js"><head><meta charset="utf-8">')
 w('<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')
 w(f"<title>{e(TITLE)}</title><meta name=\"description\" content=\"{e(DESC)}\">")
-w('<meta name="robots" content="index, follow, max-image-preview:large">' if PROD else '<meta name="robots" content="noindex, nofollow">')
-w(f'<link rel="canonical" href="{SITE}"><meta name="theme-color" content="#08090A">')
+w('<meta name="robots" content="noindex, nofollow"><meta name="yandex" content="noindex, nofollow"><meta name="theme-color" content="#08090A">')
 w(f'<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:site_name" content="СК Деревянко">'
   f'<meta property="og:title" content="{e(TITLE)}"><meta property="og:description" content="{e(DESC)}">'
-  f'<meta property="og:url" content="{SITE}"><meta property="og:image" content="{SITE}assets/img/og.jpg"><meta name="twitter:card" content="summary_large_image">')
+  f'<meta property="og:image" content="assets/img/og.jpg"><meta name="twitter:card" content="summary_large_image">')
 w('<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">')
 w('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
 w('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alumni+Sans:wght@500;600;700;800&family=Manrope:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">')
@@ -331,7 +331,8 @@ w('<div class="form-head">' + label("Заявка") + '<h2 class="mid" id="form-
   '<p>Перезвоним, ответим на вопросы и договоримся о бесплатном замере.</p>'
   f'<ul class="form-alt"><li><a href="{TEL}">{PHONE}</a></li><li><a href="{TEL2}">{PHONE2}</a></li>'
   f'<li><a href="mailto:{EMAIL}">{EMAIL}</a></li></ul></div>')
-w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate data-unit="wpcf7-f{FORM_ID}-o1">')
+w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate>')
+w('<label class="hp" aria-hidden="true">Не заполняйте<input name="website" tabindex="-1" autocomplete="off"></label>')
 w('<label class="fld"><span>Имя</span><input name="your-name" autocomplete="name" required></label>')
 w('<label class="fld"><span>Телефон</span><input name="your-phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+7"></label>')
 w('<fieldset class="fld types"><legend>Тип объекта</legend><div>' +
@@ -386,5 +387,5 @@ w(f'<script src="assets/js/site.js?v={VER}" defer></script></body></html>')
 (ROOT / "assets/img/favicon.svg").write_text(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#08090A"/>'
     '<rect x="14" y="14" width="14" height="14" fill="#A70F27"/><path d="M14 36h36v14H14z" fill="#F3F2EE"/></svg>')
-(ROOT / "robots.txt").write_text("User-agent: *\nDisallow: /\n" if not PROD else f"User-agent: *\nAllow: /\nSitemap: {SITE}sitemap.xml\n")
+(ROOT / "robots.txt").write_text("User-agent: *\nDisallow: /\n")
 print("index.html", len("\n".join(H)) // 1024, "KB", "PROD" if PROD else "staging")

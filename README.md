@@ -5,11 +5,12 @@ Staging: https://pizko.github.io/derevyanko/ (noindex).
 
 ```
 python3 src/media.py          # фото из orig/uploads → assets/img (AVIF + WebP)
-python3 src/build.py          # staging: noindex, без Метрики
-python3 src/build.py --prod   # для домена: index + Метрика
+python3 src/build.py          # staging (GitHub Pages), без Метрики
+./deploy/deploy.sh            # боевой: beget vyache8m ~/sk-remont/public_html, с Метрикой
 ```
 
+Сайт работает только под Яндекс.Директ и закрыт от индексации: meta robots, robots.txt, X-Robots-Tag.
+
 - Все тексты, цены и объекты — с текущего сайта; площади и сроки объектов не публикуются, пока их нет.
-- Заявки уходят в отдельную форму Contact Form 7 (id 9421) на sk-derevyanko.ru.
-  С github.io отправка упирается в защиту beget (cookie) — на сайте форма заработает на своём домене;
-  на staging при ошибке показываются телефон и Telegram.
+- Заявки: `send.php` → Telegram-бот заявок. Токен в `~/sk-remont/lead_config.php` (вне webroot),
+  копия каждой заявки — `~/sk-remont/leads.log`. На staging PHP нет — форма покажет телефон.
