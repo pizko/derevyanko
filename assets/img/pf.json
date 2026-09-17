@@ -1,0 +1,406 @@
+{
+ "ochakovskaya": [
+  {
+   "n": "pf/ochakovskaya-01",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/ochakovskaya-02",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/ochakovskaya-03",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/ochakovskaya-04",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/ochakovskaya-05",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/ochakovskaya-06",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/ochakovskaya-07",
+   "w": 960,
+   "h": 1280
+  }
+ ],
+ "detsky-centr": [
+  {
+   "n": "pf/detsky-centr-01",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-02",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-03",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-04",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-05",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-06",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-07",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-08",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-09",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-10",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-11",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-12",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-13",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-14",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-15",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-16",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/detsky-centr-17",
+   "w": 960,
+   "h": 1280
+  }
+ ],
+ "eniteo": [
+  {
+   "n": "pf/eniteo-01",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-02",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-03",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-04",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-05",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-06",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-07",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-08",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-09",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-10",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-11",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/eniteo-12",
+   "w": 960,
+   "h": 1280
+  }
+ ],
+ "shelepiha": [
+  {
+   "n": "pf/shelepiha-01",
+   "w": 1280,
+   "h": 852
+  },
+  {
+   "n": "pf/shelepiha-02",
+   "w": 852,
+   "h": 1280
+  },
+  {
+   "n": "pf/shelepiha-03",
+   "w": 1280,
+   "h": 1280
+  },
+  {
+   "n": "pf/shelepiha-04",
+   "w": 1280,
+   "h": 1280
+  },
+  {
+   "n": "pf/shelepiha-05",
+   "w": 852,
+   "h": 1280
+  },
+  {
+   "n": "pf/shelepiha-06",
+   "w": 852,
+   "h": 1280
+  },
+  {
+   "n": "pf/shelepiha-07",
+   "w": 852,
+   "h": 1280
+  },
+  {
+   "n": "pf/shelepiha-08",
+   "w": 852,
+   "h": 1280
+  },
+  {
+   "n": "pf/shelepiha-09",
+   "w": 852,
+   "h": 1280
+  }
+ ],
+ "sky-house": [
+  {
+   "n": "pf/sky-house-01",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-02",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-03",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-04",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-05",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-06",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-07",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-08",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-09",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-10",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-11",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-12",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-13",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-14",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-15",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-16",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-17",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/sky-house-18",
+   "w": 960,
+   "h": 1280
+  }
+ ],
+ "prime-park": [
+  {
+   "n": "pf/prime-park-01",
+   "w": 1280,
+   "h": 960
+  },
+  {
+   "n": "pf/prime-park-02",
+   "w": 1280,
+   "h": 960
+  },
+  {
+   "n": "pf/prime-park-03",
+   "w": 1280,
+   "h": 960
+  },
+  {
+   "n": "pf/prime-park-04",
+   "w": 1280,
+   "h": 960
+  },
+  {
+   "n": "pf/prime-park-05",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/prime-park-06",
+   "w": 1280,
+   "h": 960
+  },
+  {
+   "n": "pf/prime-park-07",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/prime-park-08",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/prime-park-09",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/prime-park-10",
+   "w": 960,
+   "h": 1280
+  }
+ ],
+ "novokuznetskaya": [
+  {
+   "n": "pf/novokuznetskaya-01",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/novokuznetskaya-02",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/novokuznetskaya-03",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/novokuznetskaya-04",
+   "w": 960,
+   "h": 1280
+  },
+  {
+   "n": "pf/novokuznetskaya-05",
+   "w": 960,
+   "h": 1280
+  }
+ ]
+}

@@ -21,11 +21,9 @@ PHONE, TEL = "+7 926 588 69 68", "tel:+79265886968"
 PHONE2, TEL2 = "+7 926 588 69 62", "tel:+79265886962"
 EMAIL = "info@sk-derevyanko.ru"
 ADDRESS = "Москва, Партийный переулок, 1, корп. 58, стр. 3"
-TG = "https://t.me/skderevyanko"
-SOCIAL = [("Telegram", TG), ("YouTube", "https://youtube.com/@derevyanko-sk"),
-          ("Дзен", "https://dzen.ru/id/66869490deb14e765dcd9429"),
-          ("Instagram*", "https://www.instagram.com/skderevyanko")]
 YMAPS = "https://yandex.ru/maps/org/derevyanko/121687699078/"
+SOCIAL = [("Дзен", "https://dzen.ru/id/66869490deb14e765dcd9429"), ("Яндекс Карты", YMAPS)]
+PF = json.loads((ROOT / "assets/img/pf.json").read_text())
 FORM_ID = 9421   # отдельная форма CF7 «Лендинг — заявка» на sk-derevyanko.ru
 FORM_URL = f"{SITE}wp-json/contact-form-7/v1/contact-forms/{FORM_ID}/feedback"
 METRIKA = 104567459
@@ -150,7 +148,7 @@ org = {
                 "addressLocality": "Москва", "postalCode": "115093", "addressCountry": "RU"},
     "areaServed": {"@type": "City", "name": "Москва"},
     "founder": {"@type": "Person", "name": "Сергей Деревянко", "jobTitle": "Основатель"},
-    "sameAs": [TG, SOCIAL[1][1], SOCIAL[2][1], YMAPS],
+    "sameAs": [SOCIAL[0][1], YMAPS],
     "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Услуги и цены", "itemListElement": [
         *[{"@type": "Offer", "itemOffered": {"@type": "Service", "name": t},
            "priceSpecification": {"@type": "UnitPriceSpecification", "price": p, "priceCurrency": "RUB",
@@ -203,7 +201,7 @@ w('<a class="btn btn-s mag" href="#form">Обсудить проект <span>→
 w('<button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>')
 w('</div></header>')
 w('<div class="menu" id="menu" hidden><nav>' + "".join(f'<a href="#{a}"><em>0{i+1}</em>{t}</a>' for i, (a, t) in enumerate(NAV)) +
-  f'</nav><div class="menu-foot"><a href="{TEL}">{PHONE}</a><a href="{TG}" rel="noopener" target="_blank">Telegram</a></div></div>')
+  f'</nav><div class="menu-foot"><a href="{TEL}">{PHONE}</a><a href="mailto:{EMAIL}">{EMAIL}</a></div></div>')
 
 w('<main id="main">')
 
@@ -239,25 +237,25 @@ w('<div class="sec-head">' + label("Selected projects / 01") +
   f'<p class="sec-note rv">{len(PROJECTS)} объектов из портфолио.<br>Москва — квартиры и коммерческие помещения.</p></div>')
 w('<div class="prj-grid">')
 for i, p in enumerate(PROJECTS):
-    photos = json.dumps([{"s": f"assets/img/{n}-1280.webp", "a": f"{p['name']} — {a}"} for n, a in p["photos"]], ensure_ascii=False)
+    n = len(PF[p["id"]])
     w(f'<article class="card c{i+1} rv" data-view>')
-    w(f'<button class="card-open" type="button" data-gallery=\'{e(photos)}\' aria-label="Фото объекта {e(p["name"])}">'
-      + pic(p["cover"], f"Ремонт: {p['name']}", "(max-width: 760px) 100vw, 50vw", "mask") + '<i class="dot"></i></button>')
-    w(f'<div class="card-meta"><p class="num">{i+1:02d} / {p["lat"]}</p><h3>{e(p["name"])}</h3>'
-      f'<ul><li>Москва</li><li>{e(p["type"])}</li><li>{len(p["photos"])} фото</li></ul></div></article>')
+    w(f'<a class="card-open" href="#obekt-{p["id"]}" aria-label="Открыть объект {e(p["name"])}: {n} фото">'
+      + pic(p["cover"], f"Ремонт: {p['name']}", "(max-width: 760px) 100vw, 50vw", "mask") + '<i class="dot"></i></a>')
+    w(f'<div class="card-meta"><p class="num">{i+1:02d} / {p["lat"]}</p><h3><a href="#obekt-{p["id"]}">{e(p["name"])}</a></h3>'
+      f'<ul><li>Москва</li><li>{e(p["type"])}</li><li>{n} фото</li></ul></div></article>')
 w('</div></section>')
 
 # ── case study ──────────────────────────────────────────────────────────────
 w('<section class="sec case" aria-labelledby="case-h">')
 w('<div class="case-head">' + label("Case study / 02") +
   '<h2 class="giant" id="case-h"><span class="ln"><span>Шелепиха</span></span></h2></div>')
-w('<figure class="case-main" data-view><button class="card-open" type="button" data-gallery=\'' +
-  e(json.dumps([{"s": f"assets/img/{n}-1280.webp", "a": f"Шелепиха — {a}"} for n, a in PROJECTS[3]["photos"]], ensure_ascii=False)) + "'>" +
-  pic("shel-gostinaya", "Гостиная-кухня в квартире на Шелепихе", "(max-width: 760px) 100vw, 66vw", "mask") + '</button></figure>')
+w('<figure class="case-main" data-view><a class="card-open" href="#obekt-shelepiha" aria-label="Все фото объекта Шелепиха">' +
+  pic("shel-gostinaya", "Гостиная-кухня в квартире на Шелепихе", "(max-width: 760px) 100vw, 66vw", "mask") + '</a></figure>')
 w('<dl class="case-spec rv">'
   '<div><dt>Объект</dt><dd>Квартира</dd></div>'
   '<div><dt>Локация</dt><dd>Москва, Шелепиха</dd></div>'
   '<div><dt>Помещения</dt><dd>Гостиная-кухня, спальня, коридор</dd></div></dl>')
+w(f'<p class="case-row-link rv"><a class="lnk" href="#obekt-shelepiha">Все фото объекта — {len(PF["shelepiha"])} <span>→</span></a></p>')
 w('<p class="case-txt rv">Тёплое дерево, серый камень и мягкий текстиль: спокойный интерьер, в котором всё решает точность — '
   'ровные плоскости, аккуратные примыкания, продуманный свет. Так выглядит объект, когда проект, инженерия и отделка сделаны одной командой.</p>')
 w('<div class="case-row">')
@@ -332,7 +330,7 @@ w('<section class="sec form-sec" id="form" aria-labelledby="form-h">')
 w('<div class="form-head">' + label("Заявка") + '<h2 class="mid" id="form-h">Обсудить проект</h2>'
   '<p>Перезвоним, ответим на вопросы и договоримся о бесплатном замере.</p>'
   f'<ul class="form-alt"><li><a href="{TEL}">{PHONE}</a></li><li><a href="{TEL2}">{PHONE2}</a></li>'
-  f'<li><a href="{TG}" target="_blank" rel="noopener">Написать в Telegram</a></li></ul></div>')
+  f'<li><a href="mailto:{EMAIL}">{EMAIL}</a></li></ul></div>')
 w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate data-unit="wpcf7-f{FORM_ID}-o1">')
 w('<label class="fld"><span>Имя</span><input name="your-name" autocomplete="name" required></label>')
 w('<label class="fld"><span>Телефон</span><input name="your-phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+7"></label>')
@@ -346,17 +344,37 @@ w('<p class="form-msg" role="status" aria-live="polite"></p></form></section>')
 
 w('</main>')
 
+# ── страницы объектов: «проваливаемся» в объект, как в портфолио на основном сайте ──
+for i, p in enumerate(PROJECTS):
+    nxt = PROJECTS[(i + 1) % len(PROJECTS)]
+    ph = PF[p["id"]]
+    w(f'<section class="pv" id="obekt-{p["id"]}" hidden aria-labelledby="pv-h-{p["id"]}">')
+    w(f'<div class="pv-bar"><a class="lnk pv-back" href="#projects"><span>←</span> Все проекты</a><p class="num">Project / {i+1:03d}</p></div>')
+    w(f'<div class="pv-head"><p class="lbl"><i></i>{p["lat"]}</p><h2 class="giant" id="pv-h-{p["id"]}">{e(p["name"])}</h2>'
+      f'<ul class="pv-meta"><li><span>Локация</span>Москва</li><li><span>Объект</span>{e(p["type"])}</li><li><span>Фото</span>{len(ph)}</li></ul></div>')
+    w('<div class="pv-grid">')
+    for k, f in enumerate(ph):
+        alt = f"{p['name']} — фото {k+1}"
+        w(f'<button class="pv-ph" type="button" data-view data-full="assets/img/{f["n"]}-1280.webp" data-alt="{e(alt)}">'
+          f'<picture><source type="image/avif" srcset="assets/img/{f["n"]}-640.avif 640w, assets/img/{f["n"]}-1280.avif 1280w" sizes="(max-width: 760px) 100vw, 33vw">'
+          f'<img src="assets/img/{f["n"]}-640.webp" srcset="assets/img/{f["n"]}-640.webp 640w, assets/img/{f["n"]}-1280.webp 1280w" sizes="(max-width: 760px) 100vw, 33vw" '
+          f'width="{f["w"]}" height="{f["h"]}" alt="{e(alt)}" loading="lazy" decoding="async"></picture><span>{k+1:02d}</span></button>')
+    w('</div>')
+    w(f'<a class="pv-next" href="#obekt-{nxt["id"]}"><span class="lbl"><i></i>Следующий проект</span><b>{e(nxt["name"])} <em>→</em></b></a>')
+    w(f'<div class="pv-cta"><p>Хотите так же? Обсудим ваш объект.</p><a class="btn mag" href="#form">Обсудить проект <span>→</span></a></div>')
+    w('</section>')
+
 # ── footer ──────────────────────────────────────────────────────────────────
 w('<footer class="ftr">')
 w('<p class="ftr-word" aria-hidden="true">СК Деревянко</p>')
 w('<div class="ftr-grid">')
 w(f'<div><p class="lbl"><i></i>Контакты</p><p><a href="{TEL}">{PHONE}</a><br><a href="{TEL2}">{PHONE2}</a><br><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>')
-w(f'<div><p class="lbl"><i></i>Адрес</p><p>{ADDRESS}<br><a href="{YMAPS}" target="_blank" rel="noopener">Яндекс Карты ↗</a></p></div>')
-w('<div><p class="lbl"><i></i>Соцсети</p><p>' + "<br>".join(f'<a href="{u}" target="_blank" rel="noopener">{t}</a>' for t, u in SOCIAL) + '</p></div>')
+w(f'<div><p class="lbl"><i></i>Адрес</p><p>{ADDRESS}</p></div>')
+w('<div><p class="lbl"><i></i>Мы на площадках</p><p>' + "<br>".join(f'<a href="{u}" target="_blank" rel="noopener">{t}</a>' for t, u in SOCIAL) + '</p></div>')
 w('<div><p class="lbl"><i></i>Разделы</p><p>' + "<br>".join(f'<a href="#{a}">{t}</a>' for a, t in NAV) + '</p></div>')
 w('</div><div class="ftr-bot"><span>© 2026 СК Деревянко</span><span>RENOVATION / DESIGN / CONSTRUCTION</span>'
   f'<a href="{SITE}privacy-policy/" target="_blank" rel="noopener">Политика конфиденциальности</a></div>')
-w('<p class="ftr-note">* Instagram принадлежит компании Meta, деятельность которой запрещена в России.</p></footer>')
+w('</footer>')
 
 w('<div class="lb" hidden role="dialog" aria-modal="true" aria-label="Фото объекта"><button class="lb-x" type="button" aria-label="Закрыть">Закрыть ✕</button>'
   '<button class="lb-p" type="button" aria-label="Предыдущее фото">←</button><figure><img alt=""><figcaption></figcaption></figure>'

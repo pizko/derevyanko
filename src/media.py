@@ -79,6 +79,20 @@ def main():
     f = ImageEnhance.Color(bg.convert("RGB")).enhance(0.9)
     meta["osnovatel"] = {"w": f.width, "h": f.height}
     save(f, "osnovatel", (480,))
+    # портфолио целиком: все фото объектов с sk-derevyanko.ru (дубли и кропы убраны заранее — src/portfolio.json)
+    slugs = {"ЖК Прайм парк": "prime-park", "ЖК Скай Хаус": "sky-house", "ЖК Энитео": "eniteo", "Шелепиха": "shelepiha",
+             "Большая Очаковская 2": "ochakovskaya", "Детский центр": "detsky-centr", "Новокузнецкая": "novokuznetskaya"}
+    pf = {}
+    (OUT / "pf").mkdir(exist_ok=True)
+    for title, files in json.loads((ROOT / "src/portfolio.json").read_text()).items():
+        slug = slugs[title]
+        pf[slug] = []
+        for i, rel in enumerate(files, 1):
+            im = grade(Image.open(ROOT / "orig/uploads" / rel))
+            name = f"pf/{slug}-{i:02d}"
+            save(im, name)
+            pf[slug].append({"n": name, "w": im.width, "h": im.height})
+    (OUT / "pf.json").write_text(json.dumps(pf, ensure_ascii=False, indent=1))
     # превью для соцсетей
     og = grade(Image.open(U / PHOTOS["prime-spalnya"]))
     og = ImageOps.fit(og, (1200, 630), Image.LANCZOS)

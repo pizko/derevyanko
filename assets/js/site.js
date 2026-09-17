@@ -122,7 +122,28 @@
     }, { passive: true });
   }
 
-  /* галерея объекта */
+  /* страницы объектов: #obekt-… открывает полноэкранный объект, назад — кнопкой браузера или «Все проекты» */
+  const views = [...d.querySelectorAll(".pv")];
+  let openView = null;
+  const route = () => {
+    const id = location.hash.slice(1);
+    const v = id.startsWith("obekt-") ? d.getElementById(id) : null;
+    views.forEach((x) => { if (x !== v) x.hidden = true; });
+    if (v) {
+      v.hidden = false; v.scrollTop = 0; openView = v;
+      d.body.style.overflow = "hidden"; hdr.classList.add("hide");
+      v.querySelector(".pv-back").focus({ preventScroll: true });
+      if (window.ym) ym(104567459, "hit", location.href);
+    } else if (openView) {
+      openView = null; d.body.style.overflow = ""; hdr.classList.remove("hide");
+      const t = d.getElementById(id) || d.getElementById("projects");
+      requestAnimationFrame(() => t.scrollIntoView({ behavior: "instant" }));
+    }
+  };
+  addEventListener("hashchange", route);
+  route();
+
+  /* просмотр фото на весь экран */
   const lb = d.querySelector(".lb"), lbImg = lb.querySelector("img"), lbCap = lb.querySelector("figcaption");
   let list = [], idx = 0, opener = null;
   const show = (i) => {
@@ -130,20 +151,24 @@
     lbImg.src = list[idx].s; lbImg.alt = list[idx].a;
     lbCap.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")} — ${list[idx].a}`;
   };
-  const close = () => { lb.hidden = true; d.body.style.overflow = ""; opener && opener.focus(); };
-  d.querySelectorAll("[data-gallery]").forEach((b) => b.addEventListener("click", () => {
-    list = JSON.parse(b.dataset.gallery); opener = b;
-    show(0); lb.hidden = false; d.body.style.overflow = "hidden"; lb.querySelector(".lb-x").focus();
-  }));
+  const close = () => { lb.hidden = true; if (!openView) d.body.style.overflow = ""; opener && opener.focus(); };
+  views.forEach((v) => {
+    const btns = [...v.querySelectorAll(".pv-ph")];
+    btns.forEach((b, i) => b.addEventListener("click", () => {
+      list = btns.map((x) => ({ s: x.dataset.full, a: x.dataset.alt })); opener = b;
+      show(i); lb.hidden = false; d.body.style.overflow = "hidden"; lb.querySelector(".lb-x").focus();
+    }));
+  });
   lb.querySelector(".lb-x").addEventListener("click", close);
   lb.querySelector(".lb-p").addEventListener("click", () => show(idx - 1));
   lb.querySelector(".lb-n").addEventListener("click", () => show(idx + 1));
   lb.addEventListener("click", (ev) => { if (ev.target === lb) close(); });
   addEventListener("keydown", (ev) => {
-    if (lb.hidden) return;
-    if (ev.key === "Escape") close();
-    if (ev.key === "ArrowLeft") show(idx - 1);
-    if (ev.key === "ArrowRight") show(idx + 1);
+    if (!lb.hidden) {
+      if (ev.key === "Escape") close();
+      if (ev.key === "ArrowLeft") show(idx - 1);
+      if (ev.key === "ArrowRight") show(idx + 1);
+    } else if (openView && ev.key === "Escape") location.hash = "projects";
   });
   let tx = null;
   lb.addEventListener("touchstart", (ev) => { tx = ev.touches[0].clientX; }, { passive: true });
@@ -153,6 +178,8 @@
     if (Math.abs(dx) > 50) show(idx + (dx < 0 ? 1 : -1));
     tx = null;
   });
+  /* «Обсудить проект» со страницы объекта — закрываем объект и едем к форме */
+  views.forEach((v) => v.querySelectorAll('a[href="#form"]').forEach((a) => a.addEventListener("click", () => { v.hidden = true; openView = null; d.body.style.overflow = ""; })));
 
   /* форма: телефон — только допустимые символы, отправка в Contact Form 7 */
   const form = d.querySelector(".lead"), msg = form.querySelector(".form-msg");
@@ -181,7 +208,7 @@
       } else throw new Error(j.status);
     } catch (err) {
       msg.className = "form-msg bad";
-      msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79265886968">+7 926 588 69 68</a> или напишите в <a href="https://t.me/skderevyanko" target="_blank" rel="noopener">Telegram</a>.';
+      msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79265886968">+7 926 588 69 68</a> или напишите на <a href="mailto:info@sk-derevyanko.ru">info@sk-derevyanko.ru</a>.';
     } finally { form.classList.remove("sending"); }
   });
 
