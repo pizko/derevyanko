@@ -19,8 +19,7 @@ VER = hashlib.md5((ROOT / "assets/css/site.css").read_bytes() + (ROOT / "assets/
 e = html.escape
 
 SITE = "https://sk-derevyanko.ru/"
-PHONE, TEL = "+7 926 588 69 68", "tel:+79265886968"
-PHONE2, TEL2 = "+7 926 588 69 62", "tel:+79265886962"
+PHONE, TEL = "+7 916 731 49 07", "tel:+79167314907"   # единственный номер на лендинге (решение 18.09.2026)
 EMAIL = "info@sk-derevyanko.ru"
 ADDRESS = "Москва, Партийный переулок, 1, корп. 58, стр. 3"
 YMAPS = "https://yandex.ru/maps/org/derevyanko/121687699078/"
@@ -144,7 +143,7 @@ DESC = ("Ремонт квартир, домов и коммерческих п�
 org = {
     "@type": ["HomeAndConstructionBusiness", "GeneralContractor"], "@id": SITE + "#org",
     "name": "СК Деревянко", "url": SITE, "image": SITE + "wp-content/uploads/2025/09/photo_2025-09-03_14-50-56.jpg",
-    "telephone": ["+79265886968", "+79265886962"], "email": EMAIL, "priceRange": "от 35 000 ₽/м²",
+    "telephone": "+79167314907", "email": EMAIL, "priceRange": "от 35 000 ₽/м²",
     "address": {"@type": "PostalAddress", "streetAddress": "Партийный переулок, 1, корп. 58, стр. 3",
                 "addressLocality": "Москва", "postalCode": "115093", "addressCountry": "RU"},
     "areaServed": {"@type": "City", "name": "Москва"},
@@ -333,7 +332,7 @@ w('</section>')
 w('<section class="sec form-sec" id="form" aria-labelledby="form-h">')
 w('<div class="form-head">' + label("Заявка") + '<h2 class="mid" id="form-h">Обсудить проект</h2>'
   '<p>Перезвоним, ответим на вопросы и договоримся о бесплатном замере.</p>'
-  f'<ul class="form-alt"><li><a href="{TEL}">{PHONE}</a></li><li><a href="{TEL2}">{PHONE2}</a></li>'
+  f'<ul class="form-alt"><li><a href="{TEL}">{PHONE}</a></li>'
   f'<li><a href="mailto:{EMAIL}">{EMAIL}</a></li></ul></div>')
 w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate>')
 w('<label class="hp" aria-hidden="true">Не заполняйте<input name="website" tabindex="-1" autocomplete="off"></label>')
@@ -378,7 +377,7 @@ for i, p in enumerate(PROJECTS):
 w('<footer class="ftr">')
 w('<p class="ftr-word" aria-hidden="true">СК Деревянко</p>')
 w('<div class="ftr-grid">')
-w(f'<div><p class="lbl"><i></i>Контакты</p><p><a href="{TEL}">{PHONE}</a><br><a href="{TEL2}">{PHONE2}</a><br><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>')
+w(f'<div><p class="lbl"><i></i>Контакты</p><p><a href="{TEL}">{PHONE}</a><br><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>')
 w(f'<div><p class="lbl"><i></i>Адрес</p><p>{ADDRESS}</p></div>')
 w('<div><p class="lbl"><i></i>Мы на площадках</p><p>' + "<br>".join(f'<a href="{u}" target="_blank" rel="noopener">{t}</a>' for t, u in SOCIAL) + '</p></div>')
 w('<div><p class="lbl"><i></i>Разделы</p><p>' + "<br>".join(f'<a href="#{a}">{t}</a>' for a, t in NAV) + '</p></div>')
