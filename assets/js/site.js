@@ -205,6 +205,7 @@
       if (j.ok) {
         form.reset(); msg.className = "form-msg ok"; msg.textContent = j.message || "Спасибо! Перезвоним в течение рабочего дня.";
         if (window.ym) ym(112782417, "reachGoal", "landing_form");
+        d.dispatchEvent(new Event("lead:ok"));
       } else throw new Error(j.error || "fail");
     } catch (err) {
       msg.className = "form-msg bad";

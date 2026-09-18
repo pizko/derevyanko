@@ -385,6 +385,7 @@ w('<div class="lb" hidden role="dialog" aria-modal="true" aria-label="Фото �
   '<button class="lb-p" type="button" aria-label="Предыдущее фото">←</button><figure><img alt=""><figcaption></figcaption></figure>'
   '<button class="lb-n" type="button" aria-label="Следующее фото">→</button></div>')
 w('<div class="cursor" aria-hidden="true">View</div>')
+w(f'<script src="assets/js/goals.js?v={VER}" defer></script>')
 w(f'<script src="assets/js/site.js?v={VER}" defer></script></body></html>')
 
 (ROOT / "index.html").write_text("\n".join(H))
