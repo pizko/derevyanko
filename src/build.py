@@ -27,7 +27,7 @@ YMAPS = "https://yandex.ru/maps/org/derevyanko/121687699078/"
 SOCIAL = [("Дзен", "https://dzen.ru/id/66869490deb14e765dcd9429"), ("Яндекс Карты", YMAPS)]
 PF = json.loads((ROOT / "assets/img/pf.json").read_text())
 FORM_URL = "send.php"   # PHP на beget → Telegram-бот заявок (конфиг вне webroot: ~/sk-remont/lead_config.php)
-METRIKA = 104567459
+METRIKA = 112782417  # счётчик лендинга sk-remont (18.09.2026); 104567459 — старый сайт sk-derevyanko.ru
 
 
 def pic(name, alt, sizes="100vw", cls="", eager=False):
@@ -185,9 +185,12 @@ w('<link rel="preload" as="image" type="image/avif" imagesrcset="assets/img/prim
 w(f'<link rel="stylesheet" href="assets/css/site.css?v={VER}">')
 w(f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)}</script>')
 if PROD:
-    w(f'<script>(function(m,e,t,r,i,k,a){{m[i]=m[i]||function(){{(m[i].a=m[i].a||[]).push(arguments)}};m[i].l=1*new Date();'
+    w(f'<script type="text/javascript">(function(m,e,t,r,i,k,a){{m[i]=m[i]||function(){{(m[i].a=m[i].a||[]).push(arguments)}};m[i].l=1*new Date();'
+      f'for(var j=0;j<document.scripts.length;j++){{if(document.scripts[j].src===r){{return;}}}}'
       f'k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}})'
-      f'(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");ym({METRIKA},"init",{{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true}});</script>')
+      f'(window,document,"script","https://mc.yandex.ru/metrika/tag.js?id={METRIKA}","ym");'
+      f'ym({METRIKA},"init",{{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",referrer:document.referrer,url:location.href,accurateTrackBounce:true,trackLinks:true}});</script>'
+      f'<noscript><div><img src="https://mc.yandex.ru/watch/{METRIKA}" style="position:absolute;left:-9999px" alt=""></div></noscript>')
 w('</head><body>')
 w('<a class="skip" href="#main">Перейти к содержимому</a>')
 

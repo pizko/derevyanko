@@ -133,7 +133,7 @@
       v.hidden = false; v.scrollTop = 0; openView = v;
       d.body.style.overflow = "hidden"; hdr.classList.add("hide");
       v.querySelector(".pv-back").focus({ preventScroll: true });
-      if (window.ym) ym(104567459, "hit", location.href);
+      if (window.ym) ym(112782417, "hit", location.href);
     } else if (openView) {
       openView = null; d.body.style.overflow = ""; hdr.classList.remove("hide");
       const t = d.getElementById(id) || d.getElementById("projects");
@@ -204,7 +204,7 @@
       const j = await r.json();
       if (j.ok) {
         form.reset(); msg.className = "form-msg ok"; msg.textContent = j.message || "Спасибо! Перезвоним в течение рабочего дня.";
-        if (window.ym) ym(104567459, "reachGoal", "landing_form");
+        if (window.ym) ym(112782417, "reachGoal", "landing_form");
       } else throw new Error(j.error || "fail");
     } catch (err) {
       msg.className = "form-msg bad";
