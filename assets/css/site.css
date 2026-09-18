@@ -466,3 +466,17 @@ details p{color:var(--tx2);padding:0 0 26px;max-width:62ch;font-size:15px}
 .policy p{color:#c9c8c3;font-size:15px;line-height:1.7;margin-bottom:10px}
 .policy-page .ftr{padding-top:0}
 @media (max-width:600px){.policy{padding-top:96px}.policy-page .hdr .btn-s{display:none}.policy-page .hdr-tel{display:inline}}
+
+/* ── анимации в карточках дизайн-проектов (embed.css из sk-remont-animations) ── */
+#services .svc-design .sk-service-art {
+  height: clamp(185px, 18vw, 235px);
+}
+
+#services .svc-design .sk-service-art > img {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+}

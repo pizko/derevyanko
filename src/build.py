@@ -118,6 +118,7 @@ FAQ = [
      "Гарантийные обязательства прописаны в договоре."),
 ]
 
+ART = {"plan": "technical-plan.svg", "axo": "interior-3d.svg"}
 SVG = {
     "plan": '<svg viewBox="0 0 160 120" aria-hidden="true"><path d="M8 8h144v104H8z"/><path d="M8 58h56v54M64 8v34M64 58h40M104 8v74h48M104 96v16M22 58v-8M120 82h-16"/><path d="M64 42a16 16 0 0 1 16 16" class="t"/><path d="M104 82a14 14 0 0 0 14 14" class="t"/><circle cx="34" cy="30" r="2"/></svg>',
     "axo": '<svg viewBox="0 0 160 120" aria-hidden="true"><path d="M80 10l62 34v48l-62 26-62-26V44z"/><path d="M80 10v60l62 22M80 70L18 92M18 44l62 26 62-26" class="t"/><path d="M48 60v26M112 60v26" class="t"/></svg>',
@@ -275,7 +276,8 @@ w('<div class="sec-head">' + label("Services / 03") +
   '<p class="sec-note rv">Дизайн интерьера и ремонт квартир под ключ.<br>Цены — за квадратный метр.</p></div>')
 w('<div class="svc-design">')
 for n, t, p, d, art in DESIGN:
-    w(f'<article class="box rv"><div class="art">{SVG[art]}</div><p class="num">{n}</p><h3>{t}</h3><p>{d}</p>'
+    # анимированные иллюстрации (готовые SVG из sk-remont-animations.zip) — через img, чтобы их стили не пересекались с .art svg
+    w(f'<article class="box rv"><div class="art sk-service-art" aria-hidden="true"><img src="assets/img/{ART[art]}" width="540" height="360" alt="" loading="lazy" decoding="async"></div><p class="num">{n}</p><h3>{t}</h3><p>{d}</p>'
       f'<p class="price">от {rub(p)} ₽<small>/м²</small></p><a class="lnk" href="#form" data-type="{e(t)}">Обсудить <span>→</span></a></article>')
 w('</div>')
 w('<h3 class="svc-sub rv"><i></i>Ремонт под ключ — три тарифа</h3><div class="svc-tariffs">')
