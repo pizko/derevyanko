@@ -234,11 +234,12 @@ w('</section>')
 w('<section class="sec prj" id="projects" aria-labelledby="prj-h">')
 w('<div class="sec-head">' + label("Selected projects / 01") +
   '<h2 class="giant" id="prj-h"><span class="ln"><span>Наши</span></span><span class="ln"><span>проекты</span></span></h2>'
-  f'<p class="sec-note rv">{len(PROJECTS)} объектов из портфолио.<br>Москва — квартиры и коммерческие помещения.</p></div>')
+  f'<p class="sec-note rv">Москва — квартиры и коммерческие помещения.</p></div>')
 w('<div class="prj-grid">')
-for i, p in enumerate(PROJECTS):
+# Шелепиха показана ниже отдельным кейсом — в сетке её нет
+for i, p in enumerate([x for x in PROJECTS if x["id"] != "shelepiha"]):
     n = len(PF[p["id"]])
-    w(f'<article class="card c{i+1} rv" data-view>')
+    w(f'<article class="card rv" data-view>')
     w(f'<a class="card-open" href="#obekt-{p["id"]}" aria-label="Открыть объект {e(p["name"])}: {n} фото">'
       + pic(p["cover"], f"Ремонт: {p['name']}", "(max-width: 760px) 100vw, 50vw", "mask") + '<i class="dot"></i></a>')
     w(f'<div class="card-meta"><p class="num">{i+1:02d} / {p["lat"]}</p><h3><a href="#obekt-{p["id"]}">{e(p["name"])}</a></h3>'
