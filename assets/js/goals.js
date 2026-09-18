@@ -39,6 +39,9 @@
     s.sent[id] = 1;
     ym(C, "reachGoal", id);
   };
+  // метка визита для сегмента «не человек»: бот — сразу, человек — как только набрал признаки.
+  // Визит из Директа без метки human = бот или посетитель без единого живого действия.
+  const mark = (v) => { if (!s.sent["m_" + v] && window.ym) { s.sent["m_" + v] = 1; ym(C, "params", { q_status: v }); } };
   const snapshot = () => ({ sec: Math.round(s.active / 1000), scroll: s.scroll, turns: s.turns, touch: s.touch, zoom: s.zoom ? 1 : 0, keys: s.keys, projects: s.projects.size, human: human() ? 1 : 0, bot: bot ? 1 : 0 });
 
   // активное время: вкладка видна и был ввод за последние 20 секунд
@@ -46,6 +49,7 @@
     const t = now();
     if (!document.hidden && t - s.lastInput < 20000) s.active += t - s.lastTick;
     s.lastTick = t;
+    if (bot) mark("bot"); else if (human()) mark("human");
     const sec = s.active / 1000;
     if (human() && sec >= T.liveSec && s.scroll >= T.liveScroll) goal("q_live");
     if (s.sent.q_live && (s.projects.size >= T.deepProjects || (sec >= T.deepSec && s.scroll >= T.deepScroll))) goal("q_deep");
