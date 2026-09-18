@@ -68,8 +68,13 @@
     steps.forEach((s, i) => s.classList.toggle("act", i === cur));
   };
 
+  /* мобильная кнопка «Обсудить проект»: висит внизу, прячется у самой формы */
+  const mCta = d.querySelector(".m-cta"), formSec = d.getElementById("form"), heroBtn = d.querySelector(".hero-act .btn");
+  const inView = (el) => { if (!el) return false; const r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
+  const onCta = () => { if (mCta) mCta.classList.toggle("off", inView(heroBtn) || inView(formSec)); };
+
   let ticking = false;
-  const frame = () => { onReveal(); onHeader(); onNav(); onMotion(); onSteps(); ticking = false; };
+  const frame = () => { onReveal(); onCta(); onHeader(); onNav(); onMotion(); onSteps(); ticking = false; };
   addEventListener("scroll", () => { onReveal(); if (!ticking) { ticking = true; requestAnimationFrame(frame); } }, { passive: true });
   addEventListener("resize", frame);
   frame();
@@ -184,7 +189,29 @@
   /* форма: телефон — только допустимые символы, отправка в Contact Form 7 */
   const form = d.querySelector(".lead"), msg = form.querySelector(".form-msg");
   const phone = form.querySelector("[name=your-phone]");
-  phone.addEventListener("input", () => { phone.value = phone.value.replace(/[^\d+()\-\s]/g, ""); });
+  /* маска телефона: +7 висит всегда, цифры раскладываются в +7 (916) 731-49-07 */
+  const fmtPhone = (v) => {
+    let n = v.replace(/\D/g, "");
+    if (n[0] === "7") n = n.slice(1);                        // префикс +7 самого поля
+    if (n.length > 10 && /^[78]/.test(n)) n = n.slice(1);    // вставили 8916… или 7916…
+    n = n.slice(0, 10);
+    let out = "+7 ";
+    if (n.length) out += "(" + n.slice(0, 3);
+    if (n.length >= 3) out += ")";
+    if (n.length > 3) out += " " + n.slice(3, 6);
+    if (n.length > 6) out += "-" + n.slice(6, 8);
+    if (n.length > 8) out += "-" + n.slice(8, 10);
+    return out;
+  };
+  const toEnd = () => requestAnimationFrame(() => phone.setSelectionRange(phone.value.length, phone.value.length));
+  phone.addEventListener("input", () => { phone.value = fmtPhone(phone.value); toEnd(); });
+  phone.addEventListener("keydown", (ev) => {
+    if (ev.key !== "Backspace") return;
+    ev.preventDefault();                                      // стираем цифру, а не скобку или дефис
+    const n = phone.value.replace(/\D/g, "").slice(1, -1);
+    phone.value = fmtPhone("7" + n); toEnd();
+  });
+  phone.addEventListener("focus", () => { if (!phone.value.startsWith("+7")) phone.value = "+7 "; toEnd(); });
   const capImg = form.querySelector(".cap-img"), capIn = form.querySelector("[name=captcha]");
   const newCap = () => { if (capImg) { capImg.src = "captcha.php?t=" + Date.now(); capIn.value = ""; } };
   const capBtn = form.querySelector(".cap-new");
@@ -195,10 +222,10 @@
     const name = form.querySelector("[name=your-name]");
     const digits = phone.value.replace(/\D/g, "");
     name.closest(".fld").classList.toggle("err", !name.value.trim());
-    phone.closest(".fld").classList.toggle("err", digits.length < 10);
+    phone.closest(".fld").classList.toggle("err", digits.length < 11);
     const capBad = !!capIn && capIn.value.trim().length < 5;
     if (capIn) capIn.closest(".fld").classList.toggle("err", capBad);
-    if (!name.value.trim() || digits.length < 10) {
+    if (!name.value.trim() || digits.length < 11) {
       msg.className = "form-msg bad"; msg.textContent = "Укажите имя и телефон — перезвоним.";
       return;
     }

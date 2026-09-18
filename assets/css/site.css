@@ -333,6 +333,17 @@ details p{color:var(--tx2);padding:0 0 26px;max-width:62ch;font-size:15px}
 .cursor.on{transform:scale(1)}
 @media (hover:hover) and (pointer:fine){[data-view],[data-view] .card-open{cursor:none}}
 
+/* ── мобильная кнопка заявки ─────────────────────────────── */
+.m-cta{display:none}
+@media (max-width:900px){
+  .m-cta{display:flex;align-items:center;justify-content:space-between;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));
+    z-index:40;height:56px;padding:0 22px;background:var(--red);color:#fff;font:600 13px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .45s var(--ease),opacity .3s}
+  .m-cta.off{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}
+  .menu-open .m-cta{display:none}
+  .ftr{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+
 /* ── адаптив ──────────────────────────────────────────────── */
 @media (max-width:1180px){
   .nav{display:none}

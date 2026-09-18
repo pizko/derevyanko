@@ -337,7 +337,7 @@ w('<div class="form-head">' + label("Заявка") + '<h2 class="mid" id="form-
 w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate>')
 w('<label class="hp" aria-hidden="true">Не заполняйте<input name="website" tabindex="-1" autocomplete="off"></label>')
 w('<label class="fld"><span>Имя</span><input name="your-name" autocomplete="name" required></label>')
-w('<label class="fld"><span>Телефон</span><input name="your-phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+7"></label>')
+w('<label class="fld"><span>Телефон</span><input name="your-phone" type="tel" inputmode="tel" autocomplete="tel" required value="+7 " placeholder="+7 (___) ___-__-__" maxlength="18"></label>')
 w('<fieldset class="fld types"><legend>Тип объекта</legend><div>' +
   "".join(f'<label><input type="radio" name="object-type" value="{t}"{" checked" if i == 0 else ""}><span>{t}</span></label>'
           for i, t in enumerate(["Квартира", "Дом", "Офис", "Коммерческое помещение", "Другое"])) + '</div></fieldset>')
@@ -389,6 +389,7 @@ w('<div class="lb" hidden role="dialog" aria-modal="true" aria-label="Фото �
   '<button class="lb-p" type="button" aria-label="Предыдущее фото">←</button><figure><img alt=""><figcaption></figcaption></figure>'
   '<button class="lb-n" type="button" aria-label="Следующее фото">→</button></div>')
 w('<div class="cursor" aria-hidden="true">View</div>')
+w('<a class="m-cta off" href="#form">Обсудить проект <span>→</span></a>')
 w(f'<script src="assets/js/goals.js?v={VER}" defer></script>')
 w(f'<script src="assets/js/site.js?v={VER}" defer></script></body></html>')
 
