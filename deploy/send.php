@@ -5,6 +5,7 @@
  * Копия каждой заявки пишется в ../leads.log — на случай, если Telegram недоступен.
  */
 declare(strict_types=1);
+session_start();
 mb_internal_encoding('UTF-8');
 header('Content-Type: application/json; charset=utf-8');
 header('X-Robots-Tag: noindex, nofollow');
@@ -44,6 +45,15 @@ $page = $field('page', 500);
 $digits = preg_replace('/\D/', '', $phone) ?? '';
 if ($name === '' || strlen($digits) < 10 || strlen($digits) > 15) {
     out(422, ['ok' => false, 'error' => 'Укажите имя и телефон.']);
+}
+
+// капча: код из captcha.php, одноразовый, живёт 10 минут
+$capIn = strtoupper(preg_replace('/\s+/', '', (string) ($_POST['captcha'] ?? '')) ?? '');
+$capOk = strtoupper((string) ($_SESSION['skr_captcha'] ?? ''));
+$capT = (int) ($_SESSION['skr_captcha_t'] ?? 0);
+unset($_SESSION['skr_captcha'], $_SESSION['skr_captcha_t']);
+if ($capOk === '' || $capIn === '' || !hash_equals($capOk, $capIn) || time() - $capT > 600) {
+    out(422, ['ok' => false, 'error' => 'Неверный код с картинки — попробуйте ещё раз.', 'captcha' => true]);
 }
 
 // не чаще одной заявки в 30 секунд с одного IP

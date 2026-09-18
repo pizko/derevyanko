@@ -185,6 +185,10 @@
   const form = d.querySelector(".lead"), msg = form.querySelector(".form-msg");
   const phone = form.querySelector("[name=your-phone]");
   phone.addEventListener("input", () => { phone.value = phone.value.replace(/[^\d+()\-\s]/g, ""); });
+  const capImg = form.querySelector(".cap-img"), capIn = form.querySelector("[name=captcha]");
+  const newCap = () => { if (capImg) { capImg.src = "captcha.php?t=" + Date.now(); capIn.value = ""; } };
+  const capBtn = form.querySelector(".cap-new");
+  if (capBtn) capBtn.addEventListener("click", () => { newCap(); capIn.focus(); });
 
   form.addEventListener("submit", async (ev) => {
     ev.preventDefault();
@@ -192,10 +196,13 @@
     const digits = phone.value.replace(/\D/g, "");
     name.closest(".fld").classList.toggle("err", !name.value.trim());
     phone.closest(".fld").classList.toggle("err", digits.length < 10);
+    const capBad = !!capIn && capIn.value.trim().length < 5;
+    if (capIn) capIn.closest(".fld").classList.toggle("err", capBad);
     if (!name.value.trim() || digits.length < 10) {
       msg.className = "form-msg bad"; msg.textContent = "Укажите имя и телефон — перезвоним.";
       return;
     }
+    if (capBad) { msg.className = "form-msg bad"; msg.textContent = "Введите код с картинки."; return; }
     const fd = new FormData(form);
     fd.append("page", location.href);
     form.classList.add("sending"); msg.className = "form-msg"; msg.textContent = "Отправляем…";
@@ -206,11 +213,14 @@
         form.reset(); msg.className = "form-msg ok"; msg.textContent = j.message || "Спасибо! Перезвоним в течение рабочего дня.";
         if (window.ym) ym(112782417, "reachGoal", "landing_form");
         d.dispatchEvent(new Event("lead:ok"));
+      } else if (j.captcha) {
+        newCap(); capIn.closest(".fld").classList.add("err");
+        msg.className = "form-msg bad"; msg.textContent = j.error; return;
       } else throw new Error(j.error || "fail");
     } catch (err) {
       msg.className = "form-msg bad";
       msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79265886968">+7 926 588 69 68</a> или напишите на <a href="mailto:info@sk-derevyanko.ru">info@sk-derevyanko.ru</a>.';
-    } finally { form.classList.remove("sending"); }
+    } finally { form.classList.remove("sending"); if (!form.querySelector(".err")) newCap(); }
   });
 
   root.classList.remove("no-js");
