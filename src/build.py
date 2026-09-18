@@ -15,7 +15,7 @@ import hashlib, html, json, pathlib, sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PROD = "--prod" in sys.argv
 META = json.loads((ROOT / "assets/img/meta.json").read_text())
-VER = hashlib.md5((ROOT / "assets/css/site.css").read_bytes() + (ROOT / "assets/js/site.js").read_bytes()).hexdigest()[:8]
+VER = hashlib.md5((ROOT / "assets/css/site.css").read_bytes() + (ROOT / "assets/js/site.js").read_bytes() + (ROOT / "assets/js/goals.js").read_bytes()).hexdigest()[:8]
 e = html.escape
 
 SITE = "https://sk-derevyanko.ru/"
