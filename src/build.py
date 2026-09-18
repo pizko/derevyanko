@@ -183,13 +183,14 @@ w('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alumni+
 w('<link rel="preload" as="image" type="image/avif" imagesrcset="assets/img/prime-spalnya-640.avif 640w, assets/img/prime-spalnya-1280.avif 1280w" imagesizes="(max-width: 760px) 100vw, 55vw">')
 w(f'<link rel="stylesheet" href="assets/css/site.css?v={VER}">')
 w(f'<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False)}</script>')
-if PROD:
-    w(f'<script type="text/javascript">(function(m,e,t,r,i,k,a){{m[i]=m[i]||function(){{(m[i].a=m[i].a||[]).push(arguments)}};m[i].l=1*new Date();'
+METRIKA_TAG = (f'<script type="text/javascript">(function(m,e,t,r,i,k,a){{m[i]=m[i]||function(){{(m[i].a=m[i].a||[]).push(arguments)}};m[i].l=1*new Date();'
       f'for(var j=0;j<document.scripts.length;j++){{if(document.scripts[j].src===r){{return;}}}}'
       f'k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}})'
       f'(window,document,"script","https://mc.yandex.ru/metrika/tag.js?id={METRIKA}","ym");'
       f'ym({METRIKA},"init",{{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",referrer:document.referrer,url:location.href,accurateTrackBounce:true,trackLinks:true}});</script>'
       f'<noscript><div><img src="https://mc.yandex.ru/watch/{METRIKA}" style="position:absolute;left:-9999px" alt=""></div></noscript>')
+if PROD:
+    w(METRIKA_TAG)
 w('</head><body>')
 w('<a class="skip" href="#main">Перейти к содержимому</a>')
 
@@ -348,7 +349,7 @@ if PROD:
       '<button class="cap-new" type="button" aria-label="Показать другой код">↻</button>'
       '<input name="captcha" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="5" required></div></div>')
 w('<div class="form-act"><button class="btn mag" type="submit">Обсудить проект <span>→</span></button>'
-  f'<p class="consent">Нажимая кнопку, вы соглашаетесь с <a href="{SITE}privacy-policy/" target="_blank" rel="noopener">политикой конфиденциальности</a>.</p></div>')
+  f'<p class="consent">Нажимая кнопку, вы соглашаетесь с <a href="politika.html" target="_blank">политикой обработки персональных данных</a>.</p></div>')
 w('<p class="form-msg" role="status" aria-live="polite"></p></form></section>')
 
 w('</main>')
@@ -382,7 +383,7 @@ w(f'<div><p class="lbl"><i></i>Адрес</p><p>{ADDRESS}</p></div>')
 w('<div><p class="lbl"><i></i>Мы на площадках</p><p>' + "<br>".join(f'<a href="{u}" target="_blank" rel="noopener">{t}</a>' for t, u in SOCIAL) + '</p></div>')
 w('<div><p class="lbl"><i></i>Разделы</p><p>' + "<br>".join(f'<a href="#{a}">{t}</a>' for a, t in NAV) + '</p></div>')
 w('</div><div class="ftr-bot"><span>© 2026 СК Деревянко</span><span>RENOVATION / DESIGN / CONSTRUCTION</span>'
-  f'<a href="{SITE}privacy-policy/" target="_blank" rel="noopener">Политика конфиденциальности</a></div>')
+  f'<a href="politika.html">Политика обработки персональных данных</a></div>')
 w('</footer>')
 
 w('<div class="lb" hidden role="dialog" aria-modal="true" aria-label="Фото объекта"><button class="lb-x" type="button" aria-label="Закрыть">Закрыть ✕</button>'
@@ -394,6 +395,65 @@ w(f'<script src="assets/js/goals.js?v={VER}" defer></script>')
 w(f'<script src="assets/js/site.js?v={VER}" defer></script></body></html>')
 
 (ROOT / "index.html").write_text("\n".join(H))
+
+# ── политика обработки персональных данных — отдельная страница на этом же сайте ──
+POLICY = [
+    ("1. Общие положения", [
+        "Настоящая Политика определяет порядок обработки и защиты персональных данных посетителей сайта ск-ремонт.рф (далее — Сайт) "
+        "и составлена в соответствии с Федеральным законом от 27.07.2006 № 152-ФЗ «О персональных данных».",
+        "Оператор персональных данных — ИП Деревянко Сергей Викторович (СК Деревянко), " + ADDRESS + ". Контакты: " + EMAIL + ", " + PHONE + ".",
+        "Отправляя заявку на Сайте, Пользователь подтверждает, что ознакомился с Политикой и даёт согласие на обработку своих персональных данных на изложенных условиях."]),
+    ("2. Какие данные мы обрабатываем", [
+        "Данные, которые Пользователь указывает в форме заявки: имя, номер телефона, тип объекта, площадь помещения.",
+        "Технические данные, которые собираются автоматически: файлы cookie, IP-адрес, сведения о браузере и устройстве, адрес страницы и источник перехода "
+        "(в том числе рекламные метки), действия на Сайте. Эти данные собираются сервисом веб-аналитики Яндекс Метрика (ООО «Яндекс»)."]),
+    ("3. Цели обработки", [
+        "Связь с Пользователем по его заявке: консультация, согласование замера, подготовка расчёта стоимости работ.",
+        "Анализ посещаемости и работы Сайта, оценка эффективности рекламы, защита формы заявки от автоматических отправок."]),
+    ("4. Правовые основания", [
+        "Обработка ведётся на основании согласия Пользователя (п. 1 ч. 1 ст. 6 Закона № 152-ФЗ), которое он даёт, отправляя форму заявки, "
+        "а также продолжая пользоваться Сайтом с включёнными файлами cookie."]),
+    ("5. Порядок обработки и передачи", [
+        "Данные из формы заявки хранятся на сервере хостинг-провайдера на территории Российской Федерации.",
+        "Для оперативного уведомления сотрудников Оператора содержание заявки передаётся через мессенджер Telegram, серверы которого могут находиться "
+        "за пределами Российской Федерации. Отправляя заявку, Пользователь соглашается на такую передачу.",
+        "Оператор не продаёт персональные данные и не передаёт их третьим лицам, кроме случаев, указанных в Политике или предусмотренных законодательством РФ."]),
+    ("6. Сроки хранения", [
+        "Персональные данные обрабатываются до достижения целей обработки, но не дольше 3 лет с момента получения, либо до отзыва согласия Пользователем. "
+        "После этого данные удаляются."]),
+    ("7. Права Пользователя", [
+        "Пользователь вправе получить сведения об обработке своих персональных данных, потребовать их уточнения, блокирования или удаления, "
+        "а также отозвать согласие на обработку. Для этого достаточно направить запрос на " + EMAIL + ". Оператор отвечает в течение 10 рабочих дней."]),
+    ("8. Файлы cookie", [
+        "Сайт использует файлы cookie для работы формы заявки и веб-аналитики. Пользователь может отключить cookie в настройках браузера; "
+        "при этом часть функций Сайта, включая отправку заявки, может работать некорректно."]),
+    ("9. Защита данных", [
+        "Оператор принимает необходимые правовые, организационные и технические меры для защиты персональных данных от неправомерного доступа, "
+        "изменения, раскрытия или уничтожения: передача данных по защищённому протоколу HTTPS, ограничение доступа к данным заявок."]),
+    ("10. Заключительные положения", [
+        "Оператор вправе вносить изменения в Политику. Актуальная редакция всегда размещена на этой странице. Редакция от 18.09.2026."]),
+]
+P = []
+P.append('<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">')
+P.append('<title>Политика обработки персональных данных — СК Деревянко</title>')
+P.append('<meta name="robots" content="noindex, nofollow"><meta name="yandex" content="noindex, nofollow"><meta name="theme-color" content="#08090A">')
+P.append('<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">')
+P.append('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
+P.append('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alumni+Sans:wght@700;800&family=Manrope:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">')
+P.append(f'<link rel="stylesheet" href="assets/css/site.css?v={VER}">')
+if PROD:
+    P.append(METRIKA_TAG)
+P.append('</head><body class="policy-page">')
+P.append('<header class="hdr solid"><div class="hdr-in"><a class="logo" href="./"><i></i><b>СК Деревянко</b></a>'
+         f'<a class="hdr-tel" href="{TEL}">{PHONE}</a><a class="btn btn-s" href="./#form">Обсудить проект <span>→</span></a></div></header>')
+P.append('<main class="policy"><a class="lnk" href="./"><span>←</span> На главную</a>')
+P.append('<p class="lbl"><i></i>Документы</p><h1 class="mid">Политика обработки персональных данных</h1>')
+for h, ps in POLICY:
+    P.append(f'<section><h2>{h}</h2>' + "".join(f"<p>{e(x)}</p>" for x in ps) + '</section>')
+P.append('</main>')
+P.append(f'<footer class="ftr"><div class="ftr-bot"><span>© 2026 СК Деревянко</span><a href="{TEL}">{PHONE}</a><a href="mailto:{EMAIL}">{EMAIL}</a></div></footer>')
+P.append('</body></html>')
+(ROOT / "politika.html").write_text("\n".join(P))
 (ROOT / "assets/img/favicon.svg").write_text(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#08090A"/>'
     '<rect x="14" y="14" width="14" height="14" fill="#A70F27"/><path d="M14 36h36v14H14z" fill="#F3F2EE"/></svg>')

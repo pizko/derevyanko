@@ -456,3 +456,13 @@ details p{color:var(--tx2);padding:0 0 26px;max-width:62ch;font-size:15px}
   .rv,.ln>span{opacity:1!important;transform:none!important}
   .mask img{clip-path:none!important;transform:none!important}
 }
+
+/* ── страница политики ────────────────────────────────────── */
+.policy{max-width:860px;margin:0 auto;padding:120px var(--pad) 80px;display:flex;flex-direction:column;gap:24px}
+.policy .lnk{align-self:flex-start}
+.policy .mid{font-size:clamp(44px,6vw,84px);margin-bottom:16px}
+.policy section{border-top:1px solid var(--line);padding-top:20px}
+.policy h2{font:700 clamp(24px,2.4vw,32px)/1.1 var(--disp);text-transform:uppercase;margin-bottom:12px}
+.policy p{color:#c9c8c3;font-size:15px;line-height:1.7;margin-bottom:10px}
+.policy-page .ftr{padding-top:0}
+@media (max-width:600px){.policy{padding-top:96px}.policy-page .hdr .btn-s{display:none}.policy-page .hdr-tel{display:inline}}
