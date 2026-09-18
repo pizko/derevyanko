@@ -55,10 +55,11 @@
     if (s.sent.q_live && (s.projects.size >= T.deepProjects || (sec >= T.deepSec && s.scroll >= T.deepScroll))) goal("q_deep");
   }, 2000);
 
-  // звонок с сайта — только от живого посетителя, побывшего на странице
+  // звонок и письмо с сайта — только от живого посетителя, побывшего на странице
   document.addEventListener("click", (e) => {
-    const a = e.target.closest('a[href^="tel:"]');
-    if (a && human() && s.active / 1000 >= T.callSec) goal("q_call");
+    const a = e.target.closest('a[href^="tel:"], a[href^="mailto:"]');
+    if (!a || !human() || s.active / 1000 < T.callSec) return;
+    goal(a.getAttribute("href").startsWith("tel:") ? "q_call" : "q_email");
   });
   // заявка — site.js шлёт событие после успешной отправки
   document.addEventListener("lead:ok", () => {
