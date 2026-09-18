@@ -6,7 +6,7 @@
    в Метрике потом подбираем пороги под реальных заявителей. */
 (() => {
   const C = 112782417;
-  const T = { liveSec: 20, liveScroll: 35, deepSec: 60, deepScroll: 75, deepProjects: 2, leadSec: 8, callSec: 5, turns: 8, touches: 3, keys: 3 };
+  const T = { liveSec: 20, liveScroll: 35, deepSec: 60, deepScroll: 75, deepProjects: 2, leadSec: 20, callSec: 20, turns: 8, touches: 3, keys: 3 };
   const now = () => performance.now();
   const ua = navigator.userAgent || "";
   const bot = !!navigator.webdriver || /HeadlessChrome|PhantomJS|Lighthouse|bot|crawl|spider|slurp/i.test(ua)
