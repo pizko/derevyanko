@@ -346,6 +346,11 @@ w('<fieldset class="fld types"><legend>Тип объекта</legend><div>' +
   "".join(f'<label><input type="radio" name="object-type" value="{t}"{" checked" if i == 0 else ""}><span>{t}</span></label>'
           for i, t in enumerate(["Квартира", "Дом", "Офис", "Коммерческое помещение", "Другое"])) + '</div></fieldset>')
 w('<label class="fld"><span>Площадь, м²</span><input name="object-area" type="number" inputmode="numeric" min="1" max="100000"></label>')
+if PROD:
+    w('<div class="fld capf"><span>Код с картинки</span><div class="cap-row">'
+      '<img class="cap-img" src="captcha.php" width="160" height="52" alt="Код с картинки">'
+      '<button class="cap-new" type="button" aria-label="Показать другой код">↻</button>'
+      '<input name="captcha" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="5" required></div></div>')
 w('<div class="form-act"><button class="btn mag" type="submit">Обсудить проект <span>→</span></button>'
   f'<p class="consent">Нажимая кнопку, вы соглашаетесь с <a href="politika.html" target="_blank">политикой обработки персональных данных</a>.</p></div>')
 w('<p class="form-msg" role="status" aria-live="polite"></p></form></section>')
@@ -404,6 +409,10 @@ w('<dialog class="lm" id="lead-modal" aria-labelledby="lm-h">'
   '<label class="fld"><span>Имя</span><input name="your-name" autocomplete="name" required></label>'
   '<label class="fld"><span>Телефон</span><input name="your-phone" type="tel" inputmode="tel" autocomplete="tel" required '
   'value="+7 " placeholder="+7 (___) ___-__-__" maxlength="18"></label>'
+  + ('<div class="fld capf"><span>Код с картинки</span><div class="cap-row">'
+     '<img class="cap-img" src="captcha.php" width="160" height="52" alt="Код с картинки">'
+     '<button class="cap-new" type="button" aria-label="Показать другой код">↻</button>'
+     '<input name="captcha" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="5" required></div></div>' if PROD else '') +
   '<div class="form-act"><button class="btn mag" type="submit">Отправить заявку <span>→</span></button>'
   '<p class="consent">Нажимая кнопку, вы соглашаетесь с <a href="politika.html" target="_blank">политикой обработки персональных данных</a>.</p></div>'
   '<p class="form-msg" role="status" aria-live="polite"></p>'

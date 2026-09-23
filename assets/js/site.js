@@ -232,6 +232,12 @@
     const phone = form.querySelector("[name=your-phone]");
     const tokenField = form.querySelector("[name=t]");
 
+    /* код с картинки: есть только на боевой сборке, где работает PHP */
+    const capImg = form.querySelector(".cap-img"), capIn = form.querySelector("[name=captcha]");
+    const newCap = () => { if (capImg) { capImg.src = "captcha.php?t=" + Date.now(); capIn.value = ""; } };
+    const capBtn = form.querySelector(".cap-new");
+    if (capBtn) capBtn.addEventListener("click", () => { newCap(); capIn.focus(); });
+
     const toEnd = () => requestAnimationFrame(() => phone.setSelectionRange(phone.value.length, phone.value.length));
     phone.addEventListener("input", () => { phone.value = fmtPhone(phone.value); toEnd(); });
     phone.addEventListener("keydown", (ev) => {
@@ -272,21 +278,39 @@
       const digits = phone.value.replace(/\D/g, "");
       name.closest(".fld").classList.toggle("err", !name.value.trim());
       phone.closest(".fld").classList.toggle("err", digits.length < 11);
+      const capBad = !!capIn && capIn.value.trim().length < 5;
+      if (capIn) capIn.closest(".fld").classList.toggle("err", capBad);
       if (!name.value.trim() || digits.length < 11) {
         msg.className = "form-msg bad"; msg.textContent = "Укажите имя и телефон — перезвоним.";
         return;
       }
+      if (capBad) { msg.className = "form-msg bad"; msg.textContent = "Введите код с картинки."; return; }
 
       form.classList.add("sending");
       msg.className = "form-msg"; msg.textContent = "Отправляем…";
       try {
         await getToken(!tokenField.value);
         let j = await post();
+        if (j && j.captcha) {
+          newCap();
+          capIn.closest(".fld").classList.add("err");
+          form.classList.remove("sending");
+          msg.className = "form-msg bad"; msg.textContent = j.error;
+          capIn.focus();
+          return;
+        }
         if (j && j.token) {
           // токен протух: берём новый и ждём, иначе сервер сочтёт мгновенную отправку ботом
           await getToken(true);
           await new Promise((r) => setTimeout(r, 2600));
           j = await post();
+          if (j && j.captcha) {
+            newCap();
+            capIn.closest(".fld").classList.add("err");
+            form.classList.remove("sending");
+            msg.className = "form-msg bad"; msg.textContent = j.error;
+            return;
+          }
         }
         if (!j || !j.ok) throw new Error((j && j.error) || "fail");
 
@@ -299,6 +323,7 @@
         done.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
       } catch (err) {
         form.classList.remove("sending");
+        newCap();
         msg.className = "form-msg bad";
         msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79167314907">+7 916 731 49 07</a> или напишите на <a href="mailto:info@sk-derevyanko.ru">info@sk-derevyanko.ru</a>.';
       }

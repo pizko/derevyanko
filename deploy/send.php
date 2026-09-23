@@ -5,6 +5,7 @@
  * Копия каждой заявки пишется в ../leads.log — на случай, если Telegram недоступен.
  */
 declare(strict_types=1);
+session_start();
 mb_internal_encoding('UTF-8');
 header('Content-Type: application/json; charset=utf-8');
 header('X-Robots-Tag: noindex, nofollow');
@@ -83,6 +84,21 @@ if (random_int(1, 50) === 1) {   // изредка подчищаем стары
             @unlink($old);
         }
     }
+}
+
+// код с картинки: одноразовый, живёт 10 минут
+$capIn = strtoupper(preg_replace('/\s+/', '', (string) ($_POST['captcha'] ?? '')) ?? '');
+$caps = (array) ($_SESSION['skr_caps'] ?? []);
+unset($_SESSION['skr_caps']);   // коды одноразовые: после попытки все сгорают
+$capMatch = false;
+foreach ($caps as $c) {
+    if (is_array($c) && $capIn !== '' && hash_equals(strtoupper((string) $c['c']), $capIn) && time() - (int) $c['t'] <= 600) {
+        $capMatch = true;
+        break;
+    }
+}
+if (!$capMatch) {
+    out(422, ['ok' => false, 'error' => 'Неверный код с картинки — попробуйте ещё раз.', 'captcha' => true]);
 }
 
 // не чаще одной заявки в 30 секунд с одного IP
