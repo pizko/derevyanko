@@ -337,19 +337,15 @@ w('<div class="form-head">' + label("Заявка") + '<h2 class="mid" id="form-
   '<p>Перезвоним, ответим на вопросы и договоримся о бесплатном замере.</p>'
   f'<ul class="form-alt"><li><a href="{TEL}">{PHONE}</a></li>'
   f'<li><a href="mailto:{EMAIL}">{EMAIL}</a></li></ul></div>')
-w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate>')
+w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate data-src="Полная форма">')
 w('<label class="hp" aria-hidden="true">Не заполняйте<input name="website" tabindex="-1" autocomplete="off"></label>')
+w('<input type="hidden" name="t" value="">')
 w('<label class="fld"><span>Имя</span><input name="your-name" autocomplete="name" required></label>')
 w('<label class="fld"><span>Телефон</span><input name="your-phone" type="tel" inputmode="tel" autocomplete="tel" required value="+7 " placeholder="+7 (___) ___-__-__" maxlength="18"></label>')
 w('<fieldset class="fld types"><legend>Тип объекта</legend><div>' +
   "".join(f'<label><input type="radio" name="object-type" value="{t}"{" checked" if i == 0 else ""}><span>{t}</span></label>'
           for i, t in enumerate(["Квартира", "Дом", "Офис", "Коммерческое помещение", "Другое"])) + '</div></fieldset>')
 w('<label class="fld"><span>Площадь, м²</span><input name="object-area" type="number" inputmode="numeric" min="1" max="100000"></label>')
-if PROD:
-    w('<div class="fld capf"><span>Код с картинки</span><div class="cap-row">'
-      '<img class="cap-img" src="captcha.php" width="160" height="52" alt="Код с картинки">'
-      '<button class="cap-new" type="button" aria-label="Показать другой код">↻</button>'
-      '<input name="captcha" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="5" required></div></div>')
 w('<div class="form-act"><button class="btn mag" type="submit">Обсудить проект <span>→</span></button>'
   f'<p class="consent">Нажимая кнопку, вы соглашаетесь с <a href="politika.html" target="_blank">политикой обработки персональных данных</a>.</p></div>')
 w('<p class="form-msg" role="status" aria-live="polite"></p></form></section>')
@@ -392,7 +388,28 @@ w('<div class="lb" hidden role="dialog" aria-modal="true" aria-label="Фото �
   '<button class="lb-p" type="button" aria-label="Предыдущее фото">←</button><figure><img alt=""><figcaption></figcaption></figure>'
   '<button class="lb-n" type="button" aria-label="Следующее фото">→</button></div>')
 w('<div class="cursor" aria-hidden="true">View</div>')
-w('<a class="m-cta off" href="#form">Обсудить проект <span>→</span></a>')
+w('<div class="m-bar off">'
+  f'<a class="m-call" href="{TEL}"><span>Позвонить</span></a>'
+  '<button class="m-lead" type="button" data-lead>Обсудить проект <span>→</span></button></div>')
+w('<dialog class="lm" id="lead-modal" aria-labelledby="lm-h">'
+  '<div class="lm-in">'
+  '<button class="lm-x" type="button" aria-label="Закрыть">Закрыть ✕</button>'
+  '<p class="lbl"><i></i>Заявка</p>'
+  '<h2 id="lm-h">Обсудить проект</h2>'
+  '<p class="lm-sub">Оставьте имя и телефон — перезвоним, ответим на вопросы и договоримся о бесплатном замере.</p>'
+  f'<form class="lead lead-s" action="{FORM_URL}" method="post" novalidate data-src="Короткая форма">'
+  '<label class="hp" aria-hidden="true">Не заполняйте<input name="website" tabindex="-1" autocomplete="off"></label>'
+  '<input type="hidden" name="t" value="">'
+  '<input type="hidden" name="interest" value="">'
+  '<label class="fld"><span>Имя</span><input name="your-name" autocomplete="name" required></label>'
+  '<label class="fld"><span>Телефон</span><input name="your-phone" type="tel" inputmode="tel" autocomplete="tel" required '
+  'value="+7 " placeholder="+7 (___) ___-__-__" maxlength="18"></label>'
+  '<div class="form-act"><button class="btn mag" type="submit">Отправить заявку <span>→</span></button>'
+  '<p class="consent">Нажимая кнопку, вы соглашаетесь с <a href="politika.html" target="_blank">политикой обработки персональных данных</a>.</p></div>'
+  '<p class="form-msg" role="status" aria-live="polite"></p>'
+  '</form>'
+  f'<p class="lm-alt">Или позвоните прямо сейчас: <a href="{TEL}">{PHONE}</a></p>'
+  '</div></dialog>')
 w(f'<script src="assets/js/goals.js?v={VER}" defer></script>')
 w(f'<script src="assets/js/site.js?v={VER}" defer></script></body></html>')
 

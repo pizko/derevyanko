@@ -68,8 +68,8 @@
     steps.forEach((s, i) => s.classList.toggle("act", i === cur));
   };
 
-  /* мобильная кнопка «Обсудить проект»: висит внизу, прячется у самой формы */
-  const mCta = d.querySelector(".m-cta"), formSec = d.getElementById("form"), heroBtn = d.querySelector(".hero-act .btn");
+  /* мобильная панель «Позвонить / Обсудить проект»: висит внизу, прячется у самой формы */
+  const mCta = d.querySelector(".m-bar"), formSec = d.getElementById("form"), heroBtn = d.querySelector(".hero-act .btn");
   const inView = (el) => { if (!el) return false; const r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
   const onCta = () => { if (mCta) mCta.classList.toggle("off", inView(heroBtn) || inView(formSec)); };
 
@@ -186,9 +186,31 @@
   /* «Обсудить проект» со страницы объекта — закрываем объект и едем к форме */
   views.forEach((v) => v.querySelectorAll('a[href="#form"]').forEach((a) => a.addEventListener("click", () => { v.hidden = true; openView = null; d.body.style.overflow = ""; })));
 
-  /* форма: телефон — только допустимые символы, отправка в Contact Form 7 */
-  const form = d.querySelector(".lead"), msg = form.querySelector(".form-msg");
-  const phone = form.querySelector("[name=your-phone]");
+  /* ── заявки ───────────────────────────────────────────────────────────
+     Две формы с одинаковой механикой: полная в секции «Заявка» и короткая
+     в модальном окне (имя + телефон). Вместо картинки с кодом — невидимый
+     одноразовый токен из token.php. После успеха форма заменяется заметным
+     подтверждением, и повторная отправка блокируется на 5 минут. */
+  const LEAD_KEY = "skr_lead_at", LEAD_LOCK = 5 * 60 * 1000;
+  const leadSentAt = () => { try { return +localStorage.getItem(LEAD_KEY) || 0; } catch (e) { return 0; } };
+  const leadLocked = () => Date.now() - leadSentAt() < LEAD_LOCK;
+
+  const doneHTML = (text) =>
+    '<div class="lead-done" role="status">' +
+    '<p class="lead-done-mark" aria-hidden="true">✓</p>' +
+    '<h3>Заявка принята</h3>' +
+    `<p>${text}</p>` +
+    '<p class="lead-done-alt">Если срочно — звоните <a href="tel:+79167314907">+7 916 731 49 07</a></p>' +
+    '</div>';
+
+  const showDone = (form, text) => {
+    const done = d.createElement("div");
+    done.className = "lead-wrap-done";
+    done.innerHTML = doneHTML(text || "Перезвоним в течение рабочего дня.");
+    form.replaceWith(done);
+    return done;
+  };
+
   /* маска телефона: +7 висит всегда, цифры раскладываются в +7 (916) 731-49-07 */
   const fmtPhone = (v) => {
     let n = v.replace(/\D/g, "");
@@ -203,52 +225,125 @@
     if (n.length > 8) out += "-" + n.slice(8, 10);
     return out;
   };
-  const toEnd = () => requestAnimationFrame(() => phone.setSelectionRange(phone.value.length, phone.value.length));
-  phone.addEventListener("input", () => { phone.value = fmtPhone(phone.value); toEnd(); });
-  phone.addEventListener("keydown", (ev) => {
-    if (ev.key !== "Backspace") return;
-    ev.preventDefault();                                      // стираем цифру, а не скобку или дефис
-    const n = phone.value.replace(/\D/g, "").slice(1, -1);
-    phone.value = fmtPhone("7" + n); toEnd();
-  });
-  phone.addEventListener("focus", () => { if (!phone.value.startsWith("+7")) phone.value = "+7 "; toEnd(); });
-  const capImg = form.querySelector(".cap-img"), capIn = form.querySelector("[name=captcha]");
-  const newCap = () => { if (capImg) { capImg.src = "captcha.php?t=" + Date.now(); capIn.value = ""; } };
-  const capBtn = form.querySelector(".cap-new");
-  if (capBtn) capBtn.addEventListener("click", () => { newCap(); capIn.focus(); });
 
-  form.addEventListener("submit", async (ev) => {
-    ev.preventDefault();
-    const name = form.querySelector("[name=your-name]");
-    const digits = phone.value.replace(/\D/g, "");
-    name.closest(".fld").classList.toggle("err", !name.value.trim());
-    phone.closest(".fld").classList.toggle("err", digits.length < 11);
-    const capBad = !!capIn && capIn.value.trim().length < 5;
-    if (capIn) capIn.closest(".fld").classList.toggle("err", capBad);
-    if (!name.value.trim() || digits.length < 11) {
-      msg.className = "form-msg bad"; msg.textContent = "Укажите имя и телефон — перезвоним.";
-      return;
-    }
-    if (capBad) { msg.className = "form-msg bad"; msg.textContent = "Введите код с картинки."; return; }
-    const fd = new FormData(form);
-    fd.append("page", location.href);
-    form.classList.add("sending"); msg.className = "form-msg"; msg.textContent = "Отправляем…";
-    try {
+  const wireLead = (form) => {
+    if (!form) return;
+    const msg = form.querySelector(".form-msg");
+    const phone = form.querySelector("[name=your-phone]");
+    const tokenField = form.querySelector("[name=t]");
+
+    const toEnd = () => requestAnimationFrame(() => phone.setSelectionRange(phone.value.length, phone.value.length));
+    phone.addEventListener("input", () => { phone.value = fmtPhone(phone.value); toEnd(); });
+    phone.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Backspace") return;
+      ev.preventDefault();                                    // стираем цифру, а не скобку или дефис
+      const n = phone.value.replace(/\D/g, "").slice(1, -1);
+      phone.value = fmtPhone("7" + n); toEnd();
+    });
+    phone.addEventListener("focus", () => { if (!phone.value.startsWith("+7")) phone.value = "+7 "; toEnd(); });
+
+    /* токен берём при первом касании формы: к моменту отправки ему уже есть пара секунд */
+    let tokenReq = null;
+    const getToken = (force) => {
+      if (force || !tokenReq) {
+        tokenReq = fetch("token.php", { cache: "no-store" })
+          .then((r) => r.json()).then((j) => { tokenField.value = j.t || ""; return j.t; })
+          .catch(() => { tokenReq = null; return ""; });
+      }
+      return tokenReq;
+    };
+    ["focusin", "input"].forEach((ev) => form.addEventListener(ev, () => getToken(false), { once: true }));
+
+    const post = async () => {
+      const fd = new FormData(form);
+      fd.append("page", location.href);
+      fd.append("src", form.dataset.src || "");
       const r = await fetch(form.action, { method: "POST", body: fd, headers: { "X-Requested-With": "XMLHttpRequest" } });
-      const j = await r.json();
-      if (j.ok) {
-        form.reset(); msg.className = "form-msg ok"; msg.textContent = j.message || "Спасибо! Перезвоним в течение рабочего дня.";
-        if (window.ym) ym(112782417, "reachGoal", "landing_form");
-        d.dispatchEvent(new Event("lead:ok"));
-      } else if (j.captcha) {
-        newCap(); capIn.closest(".fld").classList.add("err");
-        msg.className = "form-msg bad"; msg.textContent = j.error; return;
-      } else throw new Error(j.error || "fail");
-    } catch (err) {
-      msg.className = "form-msg bad";
-      msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79167314907">+7 916 731 49 07</a> или напишите на <a href="mailto:info@sk-derevyanko.ru">info@sk-derevyanko.ru</a>.';
-    } finally { form.classList.remove("sending"); if (!form.querySelector(".err")) newCap(); }
-  });
+      return r.json();
+    };
+
+    form.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      if (leadLocked()) {
+        showDone(form, "Мы уже получили вашу заявку и скоро перезвоним.");
+        return;
+      }
+      const name = form.querySelector("[name=your-name]");
+      const digits = phone.value.replace(/\D/g, "");
+      name.closest(".fld").classList.toggle("err", !name.value.trim());
+      phone.closest(".fld").classList.toggle("err", digits.length < 11);
+      if (!name.value.trim() || digits.length < 11) {
+        msg.className = "form-msg bad"; msg.textContent = "Укажите имя и телефон — перезвоним.";
+        return;
+      }
+
+      form.classList.add("sending");
+      msg.className = "form-msg"; msg.textContent = "Отправляем…";
+      try {
+        await getToken(!tokenField.value);
+        let j = await post();
+        if (j && j.token) {
+          // токен протух: берём новый и ждём, иначе сервер сочтёт мгновенную отправку ботом
+          await getToken(true);
+          await new Promise((r) => setTimeout(r, 2600));
+          j = await post();
+        }
+        if (!j || !j.ok) throw new Error((j && j.error) || "fail");
+
+        try { localStorage.setItem(LEAD_KEY, String(Date.now())); } catch (e) { /* приватный режим */ }
+        if (!j.duplicate) {
+          if (window.ym) ym(112782417, "reachGoal", "landing_form");
+          d.dispatchEvent(new Event("lead:ok"));
+        }
+        const done = showDone(form, j.message);
+        done.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+      } catch (err) {
+        form.classList.remove("sending");
+        msg.className = "form-msg bad";
+        msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79167314907">+7 916 731 49 07</a> или напишите на <a href="mailto:info@sk-derevyanko.ru">info@sk-derevyanko.ru</a>.';
+      }
+    });
+
+    /* заявку уже отправляли пять минут назад — форму не показываем */
+    if (leadLocked()) showDone(form, "Мы уже получили вашу заявку и скоро перезвоним.");
+  };
+
+  wireLead(d.querySelector(".form-sec .lead"));
+
+  /* модальное окно с короткой формой: открывается всеми кнопками «Обсудить проект» */
+  const lm = d.getElementById("lead-modal");
+  if (lm && typeof lm.showModal === "function") {
+    const lmForm = lm.querySelector(".lead");
+    wireLead(lmForm);
+    const typeField = lm.querySelector("[name=interest]");
+    let lastOpener = null;
+
+    const openLead = (opener, type) => {
+      lastOpener = opener || null;
+      if (typeField) typeField.value = type || "";
+      const view = d.querySelector(".pv:not([hidden])");
+      if (view) { view.hidden = true; openView = null; }      // ушли со страницы объекта
+      lm.showModal();
+      d.body.style.overflow = "hidden";
+      const first = lm.querySelector("input:not([type=hidden]):not([tabindex])");
+      if (first) first.focus({ preventScroll: true });
+    };
+    const closeLead = () => lm.close();
+
+    lm.addEventListener("close", () => {
+      d.body.style.overflow = "";
+      if (lastOpener && d.contains(lastOpener)) lastOpener.focus();
+    });
+    lm.querySelector(".lm-x").addEventListener("click", closeLead);
+    lm.addEventListener("click", (ev) => { if (ev.target === lm) closeLead(); });
+
+    d.addEventListener("click", (ev) => {
+      const t = ev.target.closest('a[href="#form"], [data-lead]');
+      if (!t || lm.open) return;
+      ev.preventDefault();
+      openLead(t, t.dataset.type || "");
+    });
+  }
 
   root.classList.remove("no-js");
 })();

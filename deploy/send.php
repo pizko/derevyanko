@@ -5,7 +5,6 @@
  * Копия каждой заявки пишется в ../leads.log — на случай, если Telegram недоступен.
  */
 declare(strict_types=1);
-session_start();
 mb_internal_encoding('UTF-8');
 header('Content-Type: application/json; charset=utf-8');
 header('X-Robots-Tag: noindex, nofollow');
@@ -41,19 +40,49 @@ if (!in_array($type, $types, true)) {
 }
 $area = preg_replace('/[^\d.,]/', '', $field('object-area', 10)) ?? '';
 $page = $field('page', 500);
+$src = $field('src', 40);
+$interest = $field('interest', 60);
 
 $digits = preg_replace('/\D/', '', $phone) ?? '';
 if ($name === '' || strlen($digits) < 10 || strlen($digits) > 15) {
     out(422, ['ok' => false, 'error' => 'Укажите имя и телефон.']);
 }
 
-// капча: код из captcha.php, одноразовый, живёт 10 минут
-$capIn = strtoupper(preg_replace('/\s+/', '', (string) ($_POST['captcha'] ?? '')) ?? '');
-$capOk = strtoupper((string) ($_SESSION['skr_captcha'] ?? ''));
-$capT = (int) ($_SESSION['skr_captcha_t'] ?? 0);
-unset($_SESSION['skr_captcha'], $_SESSION['skr_captcha_t']);
-if ($capOk === '' || $capIn === '' || !hash_equals($capOk, $capIn) || time() - $capT > 600) {
-    out(422, ['ok' => false, 'error' => 'Неверный код с картинки — попробуйте ещё раз.', 'captcha' => true]);
+// невидимая проверка: одноразовый подписанный токен из token.php.
+// Человек тратит на форму хотя бы пару секунд — мгновенная отправка отсекается.
+$cfgKey = @include dirname(__DIR__) . '/lead_config.php';
+$key = hash('sha256', (string) ($cfgKey['bot_token'] ?? 'skr') . '|skr-form-key');
+$bad = static function () {
+    out(422, ['ok' => false, 'error' => 'Форма устарела — обновите страницу и отправьте ещё раз.', 'token' => true]);
+};
+$parts = explode('.', (string) ($_POST['t'] ?? ''));
+if (count($parts) !== 3) {
+    $bad();
+}
+[$tkTime, $tkNonce, $tkSig] = $parts;
+if (!ctype_digit($tkTime) || !ctype_xdigit($tkNonce) || !hash_equals(hash_hmac('sha256', $tkTime . '.' . $tkNonce, $key), $tkSig)) {
+    $bad();
+}
+$age = time() - (int) $tkTime;
+if ($age < 2 || $age > 7200) {
+    $bad();
+}
+// одноразовость: метку нельзя переиспользовать
+$nonceDir = dirname(__DIR__) . '/lead_nonce';
+if (!is_dir($nonceDir)) {
+    @mkdir($nonceDir, 0700);
+}
+$nonceFile = $nonceDir . '/' . $tkNonce;
+if (is_file($nonceFile)) {
+    $bad();
+}
+@touch($nonceFile);
+if (random_int(1, 50) === 1) {   // изредка подчищаем старые метки
+    foreach ((array) @glob($nonceDir . '/*') as $old) {
+        if (is_string($old) && time() - (int) @filemtime($old) > 7200) {
+            @unlink($old);
+        }
+    }
 }
 
 // не чаще одной заявки в 30 секунд с одного IP
@@ -63,8 +92,10 @@ if (!is_dir($rlDir)) {
     @mkdir($rlDir, 0700);
 }
 $rlFile = $rlDir . '/' . md5($ip);
-if (is_file($rlFile) && time() - (int) @filemtime($rlFile) < 30) {
-    out(429, ['ok' => false, 'error' => 'Заявка уже отправлена, подождите немного.']);
+if (is_file($rlFile) && time() - (int) @filemtime($rlFile) < 90) {
+    // заявка с этого адреса только что пришла: не дублируем её в Telegram,
+    // но и ошибку не показываем — человек уже всё сделал правильно
+    out(200, ['ok' => true, 'duplicate' => true, 'message' => 'Заявка уже у нас — перезвоним в течение рабочего дня.']);
 }
 @touch($rlFile);
 
@@ -83,6 +114,8 @@ $text = "🏗 Заявка — СК Деревянко (лендинг)\n\n"
     . "Телефон: {$phone}\n"
     . "Объект: {$type}\n"
     . 'Площадь: ' . ($area !== '' ? "{$area} м²" : '—') . "\n"
+    . ($interest !== '' ? "Интерес: {$interest}\n" : '')
+    . ($src !== '' ? "Форма: {$src}\n" : '')
     . ($utm ? "\nМетки: " . implode(', ', $utm) . "\n" : '')
     . "\n" . date('d.m.Y H:i') . ' МСК';
 
