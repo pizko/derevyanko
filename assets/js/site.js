@@ -1,4 +1,4 @@
-/* СК Деревянко — анимации, меню, галерея, форма. Без библиотек. */
+/* СК-Ремонт — анимации, меню, галерея, форма. Без библиотек. */
 (() => {
   const d = document, root = d.documentElement;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -325,7 +325,7 @@
         form.classList.remove("sending");
         newCap();
         msg.className = "form-msg bad";
-        msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79167314907">+7 916 731 49 07</a> или напишите на <a href="mailto:info@sk-derevyanko.ru">info@sk-derevyanko.ru</a>.';
+        msg.innerHTML = 'Не получилось отправить. Позвоните <a href="tel:+79167314907">+7 916 731 49 07</a>.';
       }
     });
 

@@ -1,4 +1,4 @@
-# СК Деревянко — лендинг
+# СК-Ремонт — лендинг (ск-ремонт.рф)
 
 Одностраничник для sk-derevyanko.ru в стиле dark editorial architecture.
 Staging: https://pizko.github.io/derevyanko/ (noindex).
@@ -9,7 +9,7 @@ python3 src/build.py          # staging (GitHub Pages), без Метрики
 ./deploy/deploy.sh            # боевой: beget vyache8m ~/sk-remont/public_html, с Метрикой
 ```
 
-Сайт работает только под Яндекс.Директ и закрыт от индексации: meta robots, robots.txt, X-Robots-Tag.
+С 12.10.2026 боевой сайт открыт для поисковиков как отдельный бренд «СК-Ремонт» (Москва, Дубининская ул., 80). Staging на Pages закрыт от индексации.
 
 - Все тексты, цены и объекты — с текущего сайта; площади и сроки объектов не публикуются, пока их нет.
 - Заявки: `send.php` → Telegram-бот заявок. Токен в `~/sk-remont/lead_config.php` (вне webroot),

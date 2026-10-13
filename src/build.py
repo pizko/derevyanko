@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Лендинг СК Деревянко (одна страница) → index.html в корне репозитория.
+"""Лендинг СК-Ремонт (одна страница) → index.html в корне репозитория.
 
 Все факты — с sk-derevyanko.ru: тарифы, FAQ, этапы, контакты, объекты портфолио.
 Площади, сроки и годы по объектам на сайте не указаны — поэтому их здесь нет.
@@ -8,7 +8,7 @@
   python3 src/build.py          # staging для GitHub Pages: без Метрики
   python3 src/build.py --prod   # для beget (папка sk-remont): Метрика + заявки через send.php
 
-Сайт ведётся только под Директ — закрыт от индексации в обоих режимах (meta, robots.txt, X-Robots-Tag).
+С 12.10.2026 сайт открыт для поисковиков как отдельный бренд «СК-Ремонт» (Москва, Дубининская ул., 80). Staging на Pages — по-прежнему noindex.
 """
 import hashlib, html, json, pathlib, sys
 
@@ -18,12 +18,11 @@ META = json.loads((ROOT / "assets/img/meta.json").read_text())
 VER = hashlib.md5((ROOT / "assets/css/site.css").read_bytes() + (ROOT / "assets/js/site.js").read_bytes() + (ROOT / "assets/js/goals.js").read_bytes()).hexdigest()[:8]
 e = html.escape
 
-SITE = "https://sk-derevyanko.ru/"
+SITE = "https://xn----jtbnkfflfq.xn--p1ai/"   # ск-ремонт.рф
 PHONE, TEL = "+7 916 731 49 07", "tel:+79167314907"   # единственный номер на лендинге (решение 18.09.2026)
-EMAIL = "info@sk-derevyanko.ru"
-ADDRESS = "Москва, Партийный переулок, 1, корп. 58, стр. 3"
-YMAPS = "https://yandex.ru/maps/org/derevyanko/121687699078/"
-SOCIAL = [("Дзен", "https://dzen.ru/id/66869490deb14e765dcd9429"), ("Яндекс Карты", YMAPS)]
+EMAIL = ""   # у бренда СК-Ремонт своей почты нет — на сайте только телефон и форма
+ADDRESS = "Москва, Дубининская улица, 80"
+SOCIAL = []   # площадки СК-Ремонт появятся — добавить сюда
 PF = json.loads((ROOT / "assets/img/pf.json").read_text())
 FORM_URL = "send.php"   # PHP на beget → Telegram-бот заявок (конфиг вне webroot: ~/sk-remont/lead_config.php)
 METRIKA = 112782417  # счётчик лендинга sk-remont (18.09.2026); 104567459 — старый сайт sk-derevyanko.ru
@@ -137,19 +136,17 @@ def rub(n):
 
 
 # ── head ────────────────────────────────────────────────────────────────────
-TITLE = "Ремонт квартир и помещений под ключ в Москве — СК Деревянко"
+TITLE = "Ремонт квартир, коммерческих помещений и офисов под ключ в Москве — СК-Ремонт"
 DESC = ("Ремонт квартир, домов и коммерческих помещений под ключ в Москве: дизайн-проект, инженерия, отделка и контроль. "
         "От 35 000 ₽/м², смета с погрешностью 5–10%, гарантия 3 года.")
 
 org = {
     "@type": ["HomeAndConstructionBusiness", "GeneralContractor"], "@id": SITE + "#org",
-    "name": "СК Деревянко", "url": SITE, "image": SITE + "wp-content/uploads/2025/09/photo_2025-09-03_14-50-56.jpg",
-    "telephone": "+79167314907", "email": EMAIL, "priceRange": "от 35 000 ₽/м²",
-    "address": {"@type": "PostalAddress", "streetAddress": "Партийный переулок, 1, корп. 58, стр. 3",
+    "name": "СК-Ремонт", "url": SITE, "image": SITE + "assets/img/prime-spalnya-1280.webp",
+    "telephone": "+79167314907", "priceRange": "от 35 000 ₽/м²",
+    "address": {"@type": "PostalAddress", "streetAddress": "Дубининская улица, 80",
                 "addressLocality": "Москва", "postalCode": "115093", "addressCountry": "RU"},
     "areaServed": {"@type": "City", "name": "Москва"},
-    "founder": {"@type": "Person", "name": "Сергей Деревянко", "jobTitle": "Основатель"},
-    "sameAs": [SOCIAL[0][1], YMAPS],
     "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Услуги и цены", "itemListElement": [
         *[{"@type": "Offer", "itemOffered": {"@type": "Service", "name": t},
            "priceSpecification": {"@type": "UnitPriceSpecification", "price": p, "priceCurrency": "RUB",
@@ -160,7 +157,7 @@ org = {
 }
 graph = [
     org,
-    {"@type": "WebSite", "@id": SITE + "#site", "url": SITE, "name": "СК Деревянко", "inLanguage": "ru", "publisher": {"@id": SITE + "#org"}},
+    {"@type": "WebSite", "@id": SITE + "#site", "url": SITE, "name": "СК-Ремонт", "inLanguage": "ru", "publisher": {"@id": SITE + "#org"}},
     {"@type": "WebPage", "@id": SITE + "#page", "url": SITE, "name": TITLE, "description": DESC, "isPartOf": {"@id": SITE + "#site"},
      "about": {"@id": SITE + "#org"}, "inLanguage": "ru"},
     {"@type": "FAQPage", "@id": SITE + "#faq", "mainEntity": [
@@ -174,8 +171,9 @@ graph = [
 w('<!doctype html><html lang="ru" class="no-js"><head><meta charset="utf-8">')
 w('<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')
 w(f"<title>{e(TITLE)}</title><meta name=\"description\" content=\"{e(DESC)}\">")
-w('<meta name="robots" content="noindex, nofollow"><meta name="yandex" content="noindex, nofollow"><meta name="theme-color" content="#08090A">')
-w(f'<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:site_name" content="СК Деревянко">'
+w(('<meta name="robots" content="index, follow">' if PROD else '<meta name="robots" content="noindex, nofollow"><meta name="yandex" content="noindex, nofollow">')
+  + f'<link rel="canonical" href="{SITE}"><meta name="theme-color" content="#08090A">')
+w(f'<meta property="og:type" content="website"><meta property="og:locale" content="ru_RU"><meta property="og:site_name" content="СК-Ремонт">'
   f'<meta property="og:title" content="{e(TITLE)}"><meta property="og:description" content="{e(DESC)}">'
   f'<meta property="og:image" content="assets/img/og.jpg"><meta name="twitter:card" content="summary_large_image">')
 w('<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">')
@@ -198,22 +196,22 @@ w('<a class="skip" href="#main">Перейти к содержимому</a>')
 # ── header ──────────────────────────────────────────────────────────────────
 NAV = [("projects", "Проекты"), ("services", "Услуги"), ("about", "О компании"), ("process", "Процесс"), ("contacts", "Контакты")]
 w('<header class="hdr" id="hdr"><div class="hdr-in">')
-w('<a class="logo" href="#top" aria-label="СК Деревянко — наверх"><i></i><b>СК Деревянко</b></a>')
+w('<a class="logo" href="#top" aria-label="СК-Ремонт — наверх"><i></i><b>СК-Ремонт</b></a>')
 w('<nav class="nav" aria-label="Разделы">' + "".join(f'<a href="#{a}">{t}</a>' for a, t in NAV) + '</nav>')
 w(f'<a class="hdr-tel" href="{TEL}">{PHONE}</a>')
 w('<a class="btn btn-s mag" href="#form">Обсудить проект <span>→</span></a>')
 w('<button class="burger" type="button" aria-label="Меню" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>')
 w('</div></header>')
 w('<div class="menu" id="menu" hidden><nav>' + "".join(f'<a href="#{a}"><em>0{i+1}</em>{t}</a>' for i, (a, t) in enumerate(NAV)) +
-  f'</nav><div class="menu-foot"><a href="{TEL}">{PHONE}</a><a href="mailto:{EMAIL}">{EMAIL}</a></div></div>')
+  f'</nav><div class="menu-foot"><a href="{TEL}">{PHONE}</a></div></div>')
 
 w('<main id="main">')
 
 # ── hero ────────────────────────────────────────────────────────────────────
 w('<section class="hero" id="top">')
-w('<div class="hero-img" data-speed="0.12">' + pic("prime-spalnya", "Спальня в ЖК Прайм парк после ремонта СК Деревянко", "(max-width: 760px) 100vw, 55vw", "mask", True) +
+w('<div class="hero-img" data-speed="0.12">' + pic("prime-spalnya", "Спальня в ЖК Прайм парк после ремонта СК-Ремонт", "(max-width: 760px) 100vw, 55vw", "mask", True) +
   '<p class="cap"><span>PROJECT / 001</span><span>ЖК ПРАЙМ ПАРК</span><span>RESIDENTIAL</span></p></div>')
-w('<div class="hero-top"><p class="lbl"><i></i>СК Деревянко — renovation studio</p><p class="coord">55.7558° N<br>37.6173° E<br>MOSCOW / 2026</p></div>')
+w('<div class="hero-top"><p class="lbl"><i></i>СК-Ремонт — renovation studio</p><p class="coord">55.7558° N<br>37.6173° E<br>MOSCOW / 2026</p></div>')
 w('<h1 class="hero-h"><span class="big"><span class="ln"><span>Ремонт</span></span><span class="ln"><span>интерьеров</span></span></span>'
   '<span class="sub">квартир и помещений под ключ в Москве</span></h1>')
 w('<div class="hero-foot">')
@@ -298,12 +296,12 @@ w('<ul class="nums-facts rv"><li>Сроки фиксируем в договор
 # ── about ───────────────────────────────────────────────────────────────────
 w('<section class="sec about" id="about" aria-labelledby="about-h">')
 w('<div class="about-head">' + label("The company / 04") +
-  '<h2 class="giant" id="about-h"><span class="ln"><span>СК</span></span><span class="ln ind"><span>Деревянко</span></span></h2></div>')
-w('<figure class="about-pic rv">' + pic("osnovatel", "Сергей Деревянко, основатель СК Деревянко", "(max-width: 760px) 80vw, 30vw", "mask") +
-  '<figcaption><span>FOUNDER</span>Сергей Деревянко</figcaption></figure>')
+  '<h2 class="giant" id="about-h"><span class="ln"><span>СК-</span></span><span class="ln ind"><span>Ремонт</span></span></h2></div>')
+w('<figure class="about-pic rv">' + pic("osnovatel", "Основатель СК-Ремонт", "(max-width: 760px) 80vw, 30vw", "mask") +
+  '<figcaption><span>FOUNDER</span>Основатель компании</figcaption></figure>')
 w('<div class="about-txt"><blockquote class="rv"><p>Мы создаём интерьер целиком — от чертежей до последней детали. '
   'За каждым объектом стоит команда специалистов и персональный контроль качества.</p>'
-  '<footer><b>Сергей Деревянко</b><span>Основатель</span></footer></blockquote>'
+  '<footer><b>Основатель</b><span>СК-Ремонт</span></footer></blockquote>'
   '<p class="rv">Более 5 лет в ремонте и более 50 реализованных проектов: квартиры, дома и коммерческие помещения. '
   'Дизайнерский ремонт квартир, дизайн интерьера и инженерные системы — в одних руках, поэтому результат совпадает с проектом.</p></div>')
 w('</section>')
@@ -336,7 +334,7 @@ w('<section class="sec form-sec" id="form" aria-labelledby="form-h">')
 w('<div class="form-head">' + label("Заявка") + '<h2 class="mid" id="form-h">Обсудить проект</h2>'
   '<p>Перезвоним, ответим на вопросы и договоримся о бесплатном замере.</p>'
   f'<ul class="form-alt"><li><a href="{TEL}">{PHONE}</a></li>'
-  f'<li><a href="mailto:{EMAIL}">{EMAIL}</a></li></ul></div>')
+  '</ul></div>')
 w(f'<form class="lead" action="{FORM_URL}" method="post" novalidate data-src="Полная форма">')
 w('<label class="hp" aria-hidden="true">Не заполняйте<input name="website" tabindex="-1" autocomplete="off"></label>')
 w('<input type="hidden" name="t" value="">')
@@ -379,13 +377,14 @@ for i, p in enumerate(PROJECTS):
 
 # ── footer ──────────────────────────────────────────────────────────────────
 w('<footer class="ftr">')
-w('<p class="ftr-word" aria-hidden="true">СК Деревянко</p>')
+w('<p class="ftr-word" aria-hidden="true">СК-Ремонт</p>')
 w('<div class="ftr-grid">')
-w(f'<div><p class="lbl"><i></i>Контакты</p><p><a href="{TEL}">{PHONE}</a><br><a href="mailto:{EMAIL}">{EMAIL}</a></p></div>')
+w(f'<div><p class="lbl"><i></i>Контакты</p><p><a href="{TEL}">{PHONE}</a><br>{ADDRESS}</p></div>')
 w(f'<div><p class="lbl"><i></i>Адрес</p><p>{ADDRESS}</p></div>')
-w('<div><p class="lbl"><i></i>Мы на площадках</p><p>' + "<br>".join(f'<a href="{u}" target="_blank" rel="noopener">{t}</a>' for t, u in SOCIAL) + '</p></div>')
+if SOCIAL:
+    w('<div><p class="lbl"><i></i>Мы на площадках</p><p>' + "<br>".join(f'<a href="{u}" target="_blank" rel="noopener">{t}</a>' for t, u in SOCIAL) + '</p></div>')
 w('<div><p class="lbl"><i></i>Разделы</p><p>' + "<br>".join(f'<a href="#{a}">{t}</a>' for a, t in NAV) + '</p></div>')
-w('</div><div class="ftr-bot"><span>© 2026 СК Деревянко</span><span>RENOVATION / DESIGN / CONSTRUCTION</span>'
+w('</div><div class="ftr-bot"><span>© 2026 СК-Ремонт</span><span>RENOVATION / DESIGN / CONSTRUCTION</span>'
   f'<a href="politika.html">Политика обработки персональных данных</a></div>')
 w('</footer>')
 
@@ -429,7 +428,7 @@ POLICY = [
     ("1. Общие положения", [
         "Настоящая Политика определяет порядок обработки и защиты персональных данных посетителей сайта ск-ремонт.рф (далее — Сайт) "
         "и составлена в соответствии с Федеральным законом от 27.07.2006 № 152-ФЗ «О персональных данных».",
-        "Оператор персональных данных — ИП Деревянко Сергей Викторович (СК Деревянко), " + ADDRESS + ". Контакты: " + EMAIL + ", " + PHONE + ".",
+        "Оператор персональных данных — ИП Деревянко Сергей Викторович (бренд «СК-Ремонт»), " + ADDRESS + ". Контакты: " + PHONE + ".",
         "Отправляя заявку на Сайте, Пользователь подтверждает, что ознакомился с Политикой и даёт согласие на обработку своих персональных данных на изложенных условиях."]),
     ("2. Какие данные мы обрабатываем", [
         "Данные, которые Пользователь указывает в форме заявки: имя, номер телефона, тип объекта, площадь помещения.",
@@ -451,7 +450,7 @@ POLICY = [
         "После этого данные удаляются."]),
     ("7. Права Пользователя", [
         "Пользователь вправе получить сведения об обработке своих персональных данных, потребовать их уточнения, блокирования или удаления, "
-        "а также отозвать согласие на обработку. Для этого достаточно направить запрос на " + EMAIL + ". Оператор отвечает в течение 10 рабочих дней."]),
+        "а также отозвать согласие на обработку. Для этого достаточно позвонить по телефону " + PHONE + ". Оператор отвечает в течение 10 рабочих дней."]),
     ("8. Файлы cookie", [
         "Сайт использует файлы cookie для работы формы заявки и веб-аналитики. Пользователь может отключить cookie в настройках браузера; "
         "при этом часть функций Сайта, включая отправку заявки, может работать некорректно."]),
@@ -463,7 +462,7 @@ POLICY = [
 ]
 P = []
 P.append('<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">')
-P.append('<title>Политика обработки персональных данных — СК Деревянко</title>')
+P.append('<title>Политика обработки персональных данных — СК-Ремонт</title>')
 P.append('<meta name="robots" content="noindex, nofollow"><meta name="yandex" content="noindex, nofollow"><meta name="theme-color" content="#08090A">')
 P.append('<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">')
 P.append('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
@@ -472,18 +471,20 @@ P.append(f'<link rel="stylesheet" href="assets/css/site.css?v={VER}">')
 if PROD:
     P.append(METRIKA_TAG)
 P.append('</head><body class="policy-page">')
-P.append('<header class="hdr solid"><div class="hdr-in"><a class="logo" href="./"><i></i><b>СК Деревянко</b></a>'
+P.append('<header class="hdr solid"><div class="hdr-in"><a class="logo" href="./"><i></i><b>СК-Ремонт</b></a>'
          f'<a class="hdr-tel" href="{TEL}">{PHONE}</a><a class="btn btn-s" href="./#form">Обсудить проект <span>→</span></a></div></header>')
 P.append('<main class="policy"><a class="lnk" href="./"><span>←</span> На главную</a>')
 P.append('<p class="lbl"><i></i>Документы</p><h1 class="mid">Политика обработки персональных данных</h1>')
 for h, ps in POLICY:
     P.append(f'<section><h2>{h}</h2>' + "".join(f"<p>{e(x)}</p>" for x in ps) + '</section>')
 P.append('</main>')
-P.append(f'<footer class="ftr"><div class="ftr-bot"><span>© 2026 СК Деревянко</span><a href="{TEL}">{PHONE}</a><a href="mailto:{EMAIL}">{EMAIL}</a></div></footer>')
+P.append(f'<footer class="ftr"><div class="ftr-bot"><span>© 2026 СК-Ремонт</span><a href="{TEL}">{PHONE}</a></div></footer>')
 P.append('</body></html>')
 (ROOT / "politika.html").write_text("\n".join(P))
 (ROOT / "assets/img/favicon.svg").write_text(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="#08090A"/>'
     '<rect x="14" y="14" width="14" height="14" fill="#A70F27"/><path d="M14 36h36v14H14z" fill="#F3F2EE"/></svg>')
-(ROOT / "robots.txt").write_text("User-agent: *\nDisallow: /\n")
+(ROOT / "robots.txt").write_text("User-agent: *\nDisallow: /send.php\nDisallow: /captcha.php\nDisallow: /token.php\n\nSitemap: " + SITE + "sitemap.xml\n" if PROD else "User-agent: *\nDisallow: /\n")
+(ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+                                 + "".join(f'<url><loc>{SITE}{u}</loc></url>' for u in ("", "msk/", "spb/")) + '</urlset>\n')   # msk/ и spb/ — статичные посадочные, лежат в репозитории как есть
 print("index.html", len("\n".join(H)) // 1024, "KB", "PROD" if PROD else "staging")

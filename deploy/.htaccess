@@ -1,6 +1,5 @@
 # Лендинг под Директ — полностью закрыт от поисковиков
 <IfModule mod_headers.c>
-  Header always set X-Robots-Tag "noindex, nofollow"
   Header always set X-Content-Type-Options "nosniff"
   <FilesMatch "\.(avif|webp|jpg|png|svg|css|js)$">
     Header set Cache-Control "public, max-age=2592000"
@@ -13,7 +12,7 @@ AddType image/webp .webp
 DirectoryIndex index.html
 Options -Indexes
 
-<FilesMatch "^\.|\.(md|py|json|log)$">
+<FilesMatch "^\.|\.(md|py|json|log|zip|bak|sql|gz)$">
   Require all denied
 </FilesMatch>
 
