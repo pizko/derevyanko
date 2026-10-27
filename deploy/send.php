@@ -140,7 +140,8 @@ $text = "🏗 Заявка — СК-Ремонт (ск-ремонт.рф)\n\n"
 $cfg = @include dirname(__DIR__) . '/lead_config.php';
 $sent = false;
 if (is_array($cfg) && !empty($cfg['bot_token']) && !empty($cfg['chat_id'])) {
-    $ch = curl_init("https://api.telegram.org/bot{$cfg['bot_token']}/sendMessage");
+    $ch = // с Beget api.telegram.org недоступен (27.10.2026) — шлём через пересылку на нашем VPS
+    $ch = curl_init("https://deltamoscow.ru/tg-relay/bot{$cfg['bot_token']}/sendMessage");
     curl_setopt_array($ch, [
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => http_build_query(['chat_id' => $cfg['chat_id'], 'text' => $text, 'disable_web_page_preview' => 'true']),
